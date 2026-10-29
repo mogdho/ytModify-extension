@@ -83,3 +83,13 @@ test('import of an empty or invalid file throws', () => {
   assert.throws(() => parseImport('{}', SettingsConfig));
   assert.throws(() => parseImport('not json', SettingsConfig));
 });
+
+test("ytModify's own Ambient defaults", () => {
+  const def = (n) => SettingsConfig.find((s) => s.name === n).default;
+  assert.equal(def('blur2'), 20);
+  assert.equal(def('edge'), 8); // what blur 20 sets edge to (blur / 2.5)
+  assert.equal(def('spread'), 100);
+  assert.equal(def('detectHorizontalBarSizeEnabled'), true);
+  assert.equal(def('detectVerticalBarSizeEnabled'), true);
+  assert.equal(def('detectVideoFillScaleEnabled'), true);
+});

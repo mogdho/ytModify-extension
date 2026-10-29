@@ -914,4 +914,18 @@ export const prepareSettingsConfigOnce = () => {
   prepared = true;
 };
 
+// ytModify: the owner's preferred defaults (used by the page, the popup and
+// "Reset to defaults"). Saved values still win over these.
+const YTM_DEFAULTS = {
+  blur2: 20,
+  edge: 8, // matches blur 20 (blur / 2.5), as the blur slider sets it
+  spread: 100,
+  detectHorizontalBarSizeEnabled: true,
+  detectVerticalBarSizeEnabled: true,
+  detectVideoFillScaleEnabled: true,
+};
+for (const setting of SettingsConfig) {
+  if (setting.name in YTM_DEFAULTS) setting.default = YTM_DEFAULTS[setting.name];
+}
+
 export default SettingsConfig;
