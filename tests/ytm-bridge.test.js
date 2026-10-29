@@ -44,3 +44,14 @@ test('removed values (reset) come through as undefined', () => {
     [['blur2', undefined]]
   );
 });
+
+import { effectiveAmbientValue, DEEP_DARK_LOCKED } from '../src/ambient/scripts/libs/ytm-bridge-core.js';
+
+test('Deep Dark locks theme and page greyness', () => {
+  assert.deepEqual(DEEP_DARK_LOCKED, { theme: 1, pageBackgroundGreyness: 0 });
+  assert.equal(effectiveAmbientValue('theme', -1, true), 1);
+  assert.equal(effectiveAmbientValue('theme', -1, false), -1);
+  assert.equal(effectiveAmbientValue('pageBackgroundGreyness', 20, true), 0);
+  assert.equal(effectiveAmbientValue('pageBackgroundGreyness', 20, false), 20);
+  assert.equal(effectiveAmbientValue('blur2', 30, true), 30);
+});

@@ -110,7 +110,7 @@ Keep **all** features: the canvas and WebGL renderers, black-bar and coloured-ba
 Deliberate removals and changes:
 1. **The in-player settings menu and its button are removed.** The popup is the only settings screen.
 2. **Sentry is removed completely.** That means `libs/errors/sentry-reporter`, every `SentryReporter.*` call, the `crashOptions` plumbing, and the `@sentry/*` dependencies. Errors go to `console` only.
-3. **Theme control is handed to Deep Dark.** While Deep Dark is on, the `theme` setting ("Appearance (theme)") is forced to **Default (0)** and hidden. That way Ambient never flips YouTube's `html[dark]` attribute (`theming.js`), which would cause light/dark flashes. Deep Dark styles `:root` itself and doesn't depend on `[dark]`. `pageBackgroundGreyness` is also hidden and forced to 0. When Deep Dark is switched **off**, both settings come back in the popup with their saved values. The header and page-content shadow and opacity settings always stay, because they only affect the glow.
+3. **Theme control is handed to Deep Dark.** While Deep Dark is on, the `theme` setting ("Appearance (theme)") is forced to **Dark (1)** and hidden. (Build finding: on "Default", Ambient paints the page white for light-mode YouTube accounts, which beats Deep Dark. On Dark, `html[dark]` switches once on load and stays, which is invisible under Deep Dark.) `pageBackgroundGreyness` is also hidden and forced to 0. When Deep Dark is switched **off**, both settings come back in the popup with their saved values. The header and page-content shadow and opacity settings always stay, because they only affect the glow.
 4. Remove the donate link, the feedback-form links, the "settings moved" image and the update/intro notices.
 5. Import/export of settings: keep **file** import/export, in the popup's Ambient tab (§5.4). **Cloud import/export (`chrome.storage.sync`) is dropped.** The owner decided this, so no settings leave the machine.
 
@@ -164,7 +164,7 @@ Settings (popup → **Ambient** tab):
 - Each Look style gets its own switch.
 - Ambient keyboard shortcuts are kept.
 - Sentry, donate and feedback links are removed.
-- While Deep Dark is on, `theme` is forced to Default and hidden, and `pageBackgroundGreyness` is hidden. Both come back when Deep Dark is off.
+- While Deep Dark is on, `theme` is forced to Dark and hidden, and `pageBackgroundGreyness` is hidden. Both come back when Deep Dark is off.
 - Ambient warnings go to a status strip in the popup's Ambient tab.
 - Shortcut keys stay rebindable in the popup.
 - Big player and Ambient video resizing simply layer.

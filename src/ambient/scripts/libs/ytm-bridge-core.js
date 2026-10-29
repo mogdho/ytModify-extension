@@ -20,3 +20,13 @@ export function extractPopupChanges(changes) {
   }
   return result;
 }
+
+// While ytModify's Deep Dark theme is on, Ambient light stays on its Dark theme
+// (theme 1; on "Default" it paints the page white for light-mode accounts) and
+// must not grey the page. These settings are forced (in memory only, so the saved
+// values come back when Deep Dark is turned off).
+export const DEEP_DARK_LOCKED = Object.freeze({ theme: 1, pageBackgroundGreyness: 0 });
+export const DEEP_DARK_KEY = 'ytm-look-deep-dark';
+
+export const effectiveAmbientValue = (name, stored, deepDarkOn) =>
+  deepDarkOn && name in DEEP_DARK_LOCKED ? DEEP_DARK_LOCKED[name] : stored;

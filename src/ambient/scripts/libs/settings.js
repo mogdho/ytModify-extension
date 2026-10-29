@@ -6,6 +6,7 @@ import { storage } from './storage';
 import { applySettingChange } from './settings-effects';
 import { attachBridge } from './ytm-bridge';
 import { getSettingDisplayText } from './settings-meta';
+import { DEEP_DARK_KEY, DEEP_DARK_LOCKED, effectiveAmbientValue } from './ytm-bridge-core';
 
 // ytModify: these moved to settings-meta.js; re-exported for existing imports.
 export {
@@ -188,6 +189,15 @@ But if this happens frequently, here are some possible causes:
       }
     }
 
+    // ytModify: Deep Dark owns the page colours while it is on.
+    let deepDarkOn = true;
+    try {
+      deepDarkOn = (await storage.get(DEEP_DARK_KEY)) !== false;
+    } catch {
+      // Keep the default.
+    }
+    this.applyDeepDarkLock(deepDarkOn);
+
     this.migrate(storedSettings);
 
     // Makes the new default framerateLimit of 30 backwards compatible with a previously enabled frameBlending
@@ -202,6 +212,24 @@ But if this happens frequently, here are some possible causes:
         'data-ambientlight-hide-scrollbar',
         this.hideScrollbar
       );
+  }
+
+  // ytModify: force (in memory only) or release the Deep Dark locked settings.
+  // The saved values are kept, so they return when Deep Dark is turned off.
+  applyDeepDarkLock(deepDarkOn) {
+    this.deepDarkOn = deepDarkOn;
+    this.unlockedValues ??= {};
+    for (const name of Object.keys(DEEP_DARK_LOCKED)) {
+      if (!(name in this.unlockedValues)) this.unlockedValues[name] = this[name];
+      this[name] = effectiveAmbientValue(name, this.unlockedValues[name], deepDarkOn);
+    }
+  }
+
+  async onDeepDarkChanged(deepDarkOn) {
+    if (deepDarkOn === this.deepDarkOn) return;
+    this.applyDeepDarkLock(deepDarkOn);
+    this.ambientlight.theming?.updateTheme(true);
+    this.ambientlight.updateStyles?.();
   }
 
   migrate(storedSettings) {
