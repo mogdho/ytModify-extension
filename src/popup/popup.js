@@ -2,9 +2,10 @@
 import { getStoredYtmSettings, safeStorage } from '../shared/ytm-settings.js';
 import { renderPipTab } from './tab-pip.js';
 import { renderLookTab } from './tab-look.js';
+import { renderQualityTab } from './tab-quality.js';
 import { renderAmbientTab } from './tab-ambient.js';
 
-const TABS = ['pip', 'look', 'ambient'];
+const TABS = ['pip', 'look', 'quality', 'ambient'];
 
 const save = (key, value) => safeStorage.set({ [key]: value });
 
@@ -21,6 +22,7 @@ async function main() {
 
   const updatePip = renderPipTab(document.getElementById('panel-pip'), settings, save);
   const updateLook = renderLookTab(document.getElementById('panel-look'), settings, save);
+  const updateQuality = renderQualityTab(document.getElementById('panel-quality'), settings, save);
   await renderAmbientTab(document.getElementById('panel-ambient'), settings);
 
   for (const tab of TABS) {
@@ -32,10 +34,11 @@ async function main() {
   selectTab(settings['ytm-popup-tab']);
 
   safeStorage.onChanged(async (changes) => {
-    if (!Object.keys(changes).some((k) => k.startsWith('ytm-pip-') || k.startsWith('ytm-look-'))) return;
+    if (!Object.keys(changes).some((k) => k.startsWith('ytm-pip-') || k.startsWith('ytm-look-') || k.startsWith('ytm-quality-'))) return;
     const next = await getStoredYtmSettings();
     updatePip(next);
     updateLook(next);
+    updateQuality(next);
   });
 }
 

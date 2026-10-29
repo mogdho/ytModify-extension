@@ -53,3 +53,13 @@ If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds tha
 - Deep Dark makes the text on the "Accept all / Reject all" buttons of YouTube's cookie-consent dialog hard to see. This comes from the original Deep Dark style.
 - [ ] On a light-mode YouTube account: watch → home → watch. The page stays dark, and the Premium logo text stays readable.
 - [ ] Turn pop-out off, reload ytModify at `chrome://extensions`, and switch away from an open (not refreshed) YouTube tab: it must not pop out.
+
+## Quality
+Check the quality with YouTube's gear menu, or right-click the video → "Stats for nerds".
+- [ ] Normal player: 720p.
+- [ ] Fullscreen (`f`): 1080p. Leave fullscreen: back to 720p.
+- [ ] Mini player (`i`): 360p. Expand it again: back to 720p.
+- [ ] Pop-out (switch tabs): stays 720p.
+- [ ] A video without 1080p in fullscreen plays its highest quality below 1080p.
+- [ ] Pick 480p by hand in the gear menu: it stays until you change view or video.
+- [ ] Quality tab master switch off: YouTube picks quality again.

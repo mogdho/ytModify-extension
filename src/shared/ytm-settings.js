@@ -35,7 +35,7 @@ const VALIDATORS = {
       ? Math.min(PLAYER_SCALE_MAX, Math.max(PLAYER_SCALE_MIN, Math.round(v)))
       : undefined,
   'ytm-look-accent': (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined),
-  'ytm-popup-tab': oneOf('pip', 'look', 'ambient'),
+  'ytm-popup-tab': oneOf('pip', 'look', 'quality', 'ambient'),
   'ytm-quality-normal': oneOf(...QUALITY_VALUES),
   'ytm-quality-fullscreen': oneOf(...QUALITY_VALUES),
   'ytm-quality-mini': oneOf(...QUALITY_VALUES),

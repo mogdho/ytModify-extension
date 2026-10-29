@@ -370,3 +370,17 @@ input:focus-visible {
 .footer__msg.is-error {
   color: var(--warn);
 }
+
+.select {
+  flex: none;
+  padding: 4px 6px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: var(--bg-3);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.select:disabled {
+  cursor: default;
+}

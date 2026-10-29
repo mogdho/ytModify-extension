@@ -113,3 +113,22 @@ export const debounce = (fn, ms) => {
     t = setTimeout(() => fn(...args), ms);
   };
 };
+
+// A row with a dropdown.
+export function selectRow({ label, hint, options, value, onChange, sub = false }) {
+  const select = el(
+    'select',
+    { class: 'select', 'aria-label': label, onchange: () => onChange(select.value) },
+    options.map(([optionValue, optionLabel]) => el('option', { value: optionValue }, optionLabel))
+  );
+  select.value = value;
+  const row = el('div', { class: `row${sub ? ' row--sub' : ''}` }, labelBlock(label, hint), select);
+  return {
+    row,
+    set: (v) => (select.value = v),
+    setDisabled: (disabled) => {
+      select.disabled = disabled;
+      row.classList.toggle('is-disabled', disabled);
+    },
+  };
+}

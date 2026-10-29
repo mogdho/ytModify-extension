@@ -113,3 +113,7 @@ test('an orphaned page script also stops forcing quality', () => {
   assert.equal(pipSettingsForPage(false, YTM_DEFAULTS)['ytm-quality-enabled'], false);
   assert.equal(pipSettingsForPage(true, YTM_DEFAULTS)['ytm-quality-enabled'], true);
 });
+
+test('popup can remember the Quality tab', () => {
+  assert.equal(getYtmSettings({ 'ytm-popup-tab': 'quality' })['ytm-popup-tab'], 'quality');
+});
