@@ -1426,11 +1426,8 @@ Video ready state: ${readyStateToString(videoElem?.readyState)}`);
   }
 
   async initSettings() {
-    this.settings = await new Settings(
-      this,
-      this.settingsMenuBtnParent,
-      this.videoPlayerElem
-    );
+    // ytModify: no in-player menu; the video player only hosts the shortcut bezel.
+    this.settings = await new Settings(this, this.videoPlayerElem);
   }
 
   initVideoOverlay() {

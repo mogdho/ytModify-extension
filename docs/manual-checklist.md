@@ -23,3 +23,9 @@ Play a watch video with sound, then:
 - [ ] (h) Opening the ytModify popup on a playing video does NOT pop it out.
 
 If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds that path to the controller.
+
+## Ambient light
+- [ ] A watch video has a coloured glow around the player.
+- [ ] No Ambient gear button appears in the player controls.
+- [ ] Pressing `G` toggles the glow and shows a small "G" bezel.
+- [ ] Two watch tabs open: a video with black bars in tab A doesn't change the bar clipping in tab B.
