@@ -70,3 +70,32 @@ test('status comes from the page settings once loaded', () => {
   const status = { loaded: true, warning: 'x' };
   assert.equal(ambientStatus({ settings: { getStatus: () => status } }), status);
 });
+
+import { invalidatesSettingsCache } from '../src/ambient/scripts/libs/ytm-bridge-core.js';
+
+test('any setting or Deep Dark change invalidates the page settings cache', () => {
+  assert.equal(invalidatesSettingsCache({ 'setting-blur2': { newValue: 1 } }), true);
+  assert.equal(invalidatesSettingsCache({ 'ytm-look-deep-dark': { newValue: false } }), true);
+  assert.equal(invalidatesSettingsCache({ 'ytm-look-font': { newValue: false } }), false);
+});
+
+import { lockTransition } from '../src/ambient/scripts/libs/ytm-bridge-core.js';
+
+test('turning Deep Dark on saves the current values and locks them', () => {
+  const r = lockTransition({ wasOn: false, on: true, current: { theme: -1, pageBackgroundGreyness: 20 }, unlocked: { theme: 1, pageBackgroundGreyness: 0 } });
+  assert.deepEqual(r.values, { theme: 1, pageBackgroundGreyness: 0 });
+  assert.deepEqual(r.unlocked, { theme: -1, pageBackgroundGreyness: 20 });
+});
+
+test('turning Deep Dark off restores the saved values', () => {
+  const r = lockTransition({ wasOn: true, on: false, current: { theme: 1, pageBackgroundGreyness: 0 }, unlocked: { theme: -1, pageBackgroundGreyness: 20 } });
+  assert.deepEqual(r.values, { theme: -1, pageBackgroundGreyness: 20 });
+});
+
+test('changes made while unlocked survive a lock and unlock', () => {
+  // Loaded unlocked with theme 1, user sets Light (-1), then Deep Dark on, then off.
+  let state = lockTransition({ wasOn: false, on: false, current: { theme: 1, pageBackgroundGreyness: 0 }, unlocked: {} });
+  state = lockTransition({ wasOn: false, on: true, current: { theme: -1, pageBackgroundGreyness: 0 }, unlocked: state.unlocked });
+  state = lockTransition({ wasOn: true, on: false, current: state.values, unlocked: state.unlocked });
+  assert.equal(state.values.theme, -1);
+});

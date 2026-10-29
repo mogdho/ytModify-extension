@@ -61,3 +61,69 @@ test('display text matches the original menu', () => {
   assert.equal(getSettingDisplayText({ name: 'x', unit: 'px' }, 3), '3px');
   assert.equal(getSettingDisplayText({ name: 'barSizeDetectionAverageHistorySize' }, 1), '1 frame');
 });
+
+import SettingsConfig from '../src/ambient/scripts/libs/settings-config.js';
+import { derivedWrites } from '../src/ambient/scripts/libs/settings-meta.js';
+
+const def = (name) => SettingsConfig.find((s) => s.name === name).default;
+const vals = (over = {}) => ({ ...Object.fromEntries(SettingsConfig.map((s) => [s.name, s.default])), ...over });
+
+test('blur also sets edge unless Advanced is on', () => {
+  assert.deepEqual(derivedWrites(SettingsConfig, 'blur2', 10, vals({ advancedSettings: false })), { blur2: 10, edge: 4 });
+  assert.deepEqual(derivedWrites(SettingsConfig, 'blur2', 2, vals({ advancedSettings: false })), { blur2: 2, edge: 2 });
+  assert.deepEqual(derivedWrites(SettingsConfig, 'blur2', 50, vals({ advancedSettings: false })), { blur2: 50, edge: 17 });
+  assert.deepEqual(derivedWrites(SettingsConfig, 'blur2', 10, vals({ advancedSettings: true })), { blur2: 10 });
+});
+
+test('editing a bar size by hand turns its detection off', () => {
+  assert.deepEqual(
+    derivedWrites(SettingsConfig, 'horizontalBarsClipPercentage', 5, vals({ detectHorizontalBarSizeEnabled: true })),
+    { horizontalBarsClipPercentage: 5, detectHorizontalBarSizeEnabled: false }
+  );
+});
+
+test('toggling detection resets the bar size', () => {
+  assert.deepEqual(
+    derivedWrites(SettingsConfig, 'detectVerticalBarSizeEnabled', true, vals({ verticalBarsClipPercentage: 7 })),
+    { detectVerticalBarSizeEnabled: true, verticalBarsClipPercentage: def('verticalBarsClipPercentage') }
+  );
+});
+
+test('frame fading limits framerate and turns off blending', () => {
+  assert.deepEqual(derivedWrites(SettingsConfig, 'frameFading', 3, vals({ frameBlending: true, framerateLimit: 0 })), {
+    frameFading: 3,
+    framerateLimit: 30,
+    frameBlending: false,
+  });
+  assert.deepEqual(derivedWrites(SettingsConfig, 'frameFading', 0, vals({ frameFading: 3, framerateLimit: 30 })), {
+    frameFading: 0,
+    framerateLimit: def('framerateLimit'),
+  });
+});
+
+test('frame blending removes the framerate limit and fading', () => {
+  assert.deepEqual(derivedWrites(SettingsConfig, 'frameBlending', true, vals({ framerateLimit: 30, frameFading: 3 })), {
+    frameBlending: true,
+    framerateLimit: 0,
+    frameFading: def('frameFading'),
+  });
+});
+
+test('changing the framerate limit turns off blending and fading', () => {
+  assert.deepEqual(derivedWrites(SettingsConfig, 'framerateLimit', 60, vals({ frameBlending: true, frameFading: 3 })), {
+    framerateLimit: 60,
+    frameBlending: false,
+    frameFading: def('frameFading'),
+  });
+});
+
+test('plain settings write only themselves', () => {
+  assert.deepEqual(derivedWrites(SettingsConfig, 'spread', 40, vals()), { spread: 40 });
+});
+
+test('editing the vertical bar size turns vertical detection off', () => {
+  assert.deepEqual(
+    derivedWrites(SettingsConfig, 'verticalBarsClipPercentage', 5, vals({ detectVerticalBarSizeEnabled: true })),
+    { verticalBarsClipPercentage: 5, detectVerticalBarSizeEnabled: false }
+  );
+});

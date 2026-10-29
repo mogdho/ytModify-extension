@@ -43,3 +43,26 @@ export const NOT_LOADED_STATUS = Object.freeze({
 });
 
 export const ambientStatus = (ambientlight) => ambientlight?.settings?.getStatus?.() ?? NOT_LOADED_STATUS;
+
+// The page caches stored settings until Ambient light starts on a watch page.
+// Popup changes made before then must drop that cache.
+export const invalidatesSettingsCache = (changes) =>
+  Object.keys(changes).some((key) => key.startsWith('setting-') || key === DEEP_DARK_KEY);
+
+/**
+ * Deep Dark lock state change for the locked settings.
+ * @param {{wasOn: boolean, on: boolean, current: object, unlocked: object}} s
+ *   current: the page's in-memory values; unlocked: the user's own values kept aside
+ * @returns {{values: object, unlocked: object}} values to use now, values to keep aside
+ */
+export function lockTransition({ wasOn, on, current, unlocked }) {
+  const names = Object.keys(DEEP_DARK_LOCKED);
+  const pick = (from) => Object.fromEntries(names.map((n) => [n, from[n]]));
+  if (on) {
+    // Entering the lock: the in-memory values are the user's latest choice.
+    const kept = wasOn ? pick({ ...current, ...unlocked }) : pick(current);
+    return { values: { ...DEEP_DARK_LOCKED }, unlocked: kept };
+  }
+  const restored = wasOn ? pick({ ...current, ...unlocked }) : pick(current);
+  return { values: restored, unlocked: restored };
+}

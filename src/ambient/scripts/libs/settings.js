@@ -6,7 +6,7 @@ import { storage } from './storage';
 import { applySettingChange } from './settings-effects';
 import { attachBridge } from './ytm-bridge';
 import { getSettingDisplayText } from './settings-meta';
-import { DEEP_DARK_KEY, DEEP_DARK_LOCKED, effectiveAmbientValue } from './ytm-bridge-core';
+import { DEEP_DARK_KEY, invalidatesSettingsCache, lockTransition } from './ytm-bridge-core';
 
 // ytModify: these moved to settings-meta.js; re-exported for existing imports.
 export {
@@ -217,12 +217,15 @@ But if this happens frequently, here are some possible causes:
   // ytModify: force (in memory only) or release the Deep Dark locked settings.
   // The saved values are kept, so they return when Deep Dark is turned off.
   applyDeepDarkLock(deepDarkOn) {
+    const { values, unlocked } = lockTransition({
+      wasOn: !!this.deepDarkOn,
+      on: deepDarkOn,
+      current: this,
+      unlocked: this.unlockedValues ?? {},
+    });
     this.deepDarkOn = deepDarkOn;
-    this.unlockedValues ??= {};
-    for (const name of Object.keys(DEEP_DARK_LOCKED)) {
-      if (!(name in this.unlockedValues)) this.unlockedValues[name] = this[name];
-      this[name] = effectiveAmbientValue(name, this.unlockedValues[name], deepDarkOn);
-    }
+    this.unlockedValues = unlocked;
+    Object.assign(this, values);
   }
 
   async onDeepDarkChanged(deepDarkOn) {
@@ -604,3 +607,10 @@ Check the hardware acceleration and WebGL settings in your browser. You can turn
     };
   }
 }
+
+// ytModify: settings can now change from the popup while this page hasn't
+// started Ambient light yet (home, search, waiting for a video). Drop the
+// cache so getAll() reads the latest values.
+storage.addListener((changes) => {
+  if (invalidatesSettingsCache(changes)) Settings.storedSettingsCached = undefined;
+});

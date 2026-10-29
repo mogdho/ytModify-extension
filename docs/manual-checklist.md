@@ -51,3 +51,5 @@ If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds tha
 
 ## Known
 - Deep Dark makes the text on the "Accept all / Reject all" buttons of YouTube's cookie-consent dialog hard to see. This comes from the original Deep Dark style.
+- [ ] On a light-mode YouTube account: watch → home → watch. The page stays dark, and the Premium logo text stays readable.
+- [ ] Turn pop-out off, reload ytModify at `chrome://extensions`, and switch away from an open (not refreshed) YouTube tab: it must not pop out.

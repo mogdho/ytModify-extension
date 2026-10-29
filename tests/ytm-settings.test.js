@@ -76,3 +76,22 @@ test('safeStorage reads through chrome.storage.local when alive', async () => {
     delete globalThis.chrome;
   }
 });
+
+import { pipSettingsForPage, isExtensionAlive } from '../src/shared/ytm-settings.js';
+
+test('an orphaned page script turns pop-out off instead of using defaults', () => {
+  const on = { ...YTM_DEFAULTS, 'ytm-pip-enabled': true };
+  assert.equal(pipSettingsForPage(true, on)['ytm-pip-enabled'], true);
+  assert.equal(pipSettingsForPage(false, on)['ytm-pip-enabled'], false);
+});
+
+test('isExtensionAlive follows chrome.runtime.id', () => {
+  globalThis.chrome = { runtime: {} };
+  try {
+    assert.equal(isExtensionAlive(), false);
+    globalThis.chrome.runtime.id = 'x';
+    assert.equal(isExtensionAlive(), true);
+  } finally {
+    delete globalThis.chrome;
+  }
+});

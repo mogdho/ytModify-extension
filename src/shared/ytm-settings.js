@@ -89,3 +89,11 @@ export const safeStorage = {
 
 export const getStoredYtmSettings = async () =>
   getYtmSettings(await safeStorage.get(Object.keys(YTM_DEFAULTS)));
+
+export const isExtensionAlive = alive;
+
+// What the page's PiP controller should use. After ytModify is reloaded or
+// turned off, an old script can't read storage any more; it must switch
+// pop-out off rather than fall back to the defaults.
+export const pipSettingsForPage = (extensionAlive, settings) =>
+  extensionAlive ? settings : { ...settings, 'ytm-pip-enabled': false };

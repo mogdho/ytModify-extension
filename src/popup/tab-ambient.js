@@ -1,7 +1,7 @@
 // Ambient tab: every Ambient light setting, with search, sections, shortcut
 // keys, status of the current tab, and file import/export.
 import SettingsConfig, { prepareSettingsConfigOnce } from '../ambient/scripts/libs/settings-config.js';
-import { getSettingDisplayText } from '../ambient/scripts/libs/settings-meta.js';
+import { getSettingDisplayText, derivedWrites } from '../ambient/scripts/libs/settings-meta.js';
 import { POPUP_ORIGIN_KEY, STATUS_MESSAGE } from '../ambient/scripts/libs/ytm-bridge-core.js';
 import { buildAmbientSections, filterSections, buildExport, parseImport } from './ambient-model.js';
 import { el, switchRow, sliderRow, debounce } from './ui.js';
@@ -12,7 +12,6 @@ const configOf = (name) => SettingsConfig.find((s) => s.name === name);
 
 // Writes go through the bridge: one set() call carrying the origin marker.
 const writeSettings = (entries) => safeStorage.set({ ...entries, [POPUP_ORIGIN_KEY]: Date.now() + Math.random() });
-const writeSetting = (name, value) => writeSettings({ [KEY(name)]: value });
 
 function readValues(stored) {
   const values = {};
@@ -48,6 +47,15 @@ export async function renderAmbientTab(root) {
   let query = '';
   let lastSignature = '';
   const updaters = new Map(); // setting name → (values, keys) => void
+
+  // One change plus the linked settings the old menu changed with it.
+  const writeSetting = (name, value) =>
+    writeSettings(
+      Object.fromEntries(
+        Object.entries(derivedWrites(SettingsConfig, name, value, readValues(stored))).map(([n, v]) => [KEY(n), v])
+      )
+    );
+  const resetSetting = (name) => writeSetting(name, configOf(name).default);
 
   const master = switchRow({
     label: 'Ambient light',
@@ -146,7 +154,7 @@ export async function renderAmbientTab(root) {
     if (setting.type === 'checkbox') {
       const control = switchRow({ label, hint, title, checked: values[setting.name], onChange: (v) => writeSetting(setting.name, v) });
       control.setDisabled(disabled);
-      control.row.addEventListener('dblclick', () => writeSetting(setting.name, undefined));
+      control.row.addEventListener('dblclick', () => resetSetting(setting.name));
       updaters.set(setting.name, (v) => control.set(v[setting.name]));
       row = control.row;
     } else {
@@ -168,7 +176,7 @@ export async function renderAmbientTab(root) {
         list: listId,
       });
       control.setDisabled(disabled);
-      control.input.addEventListener('dblclick', () => writeSetting(setting.name, undefined));
+      control.input.addEventListener('dblclick', () => resetSetting(setting.name));
       if (setting.snapPoints) {
         control.row.append(
           el('datalist', { id: listId }, setting.snapPoints.map((p) => el('option', { value: toSlider(p.value), label: p.label })))

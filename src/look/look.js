@@ -23,7 +23,12 @@ export function buildLookStyles(settings, css, assetBase = '') {
     });
   }
   if (settings['ytm-look-font']) styles.push({ id: 'ytm-sans', text: css.sans });
-  if (settings['ytm-look-logo']) styles.push({ id: 'ytm-logo', text: css.logo });
+  if (settings['ytm-look-logo']) {
+    // Deep Dark is dark even on a light-mode account, so the logo's
+    // `html[dark]` (white text) version must always apply.
+    const logo = settings['ytm-look-deep-dark'] ? css.logo.split('html[dark] ').join('html ') : css.logo;
+    styles.push({ id: 'ytm-logo', text: logo });
+  }
   if (settings['ytm-look-player-size'] === 'big') {
     const scale = playerScale(settings['ytm-look-player-scale']);
     styles.push({ id: 'ytm-bigger', text: `:root{--ytm-player-scale:${scale}}\n${css.bigger}` });

@@ -67,3 +67,12 @@ test('premium and howyoutubeworks pages are excluded', () => {
   assert.equal(isLookExcludedPath('/'), false);
   assert.equal(isLookExcludedPath('/premiumx'), true);
 });
+
+test('with Deep Dark on, the logo always uses its dark-theme version', () => {
+  const logoCss = 'a{x:light} html[dark] a{x:dark} html[dark] b{y:dark}';
+  const css2 = { ...css, logo: logoCss };
+  const on = byId(buildLookStyles(YTM_DEFAULTS, css2), 'ytm-logo').text;
+  assert.equal(on, 'a{x:light} html a{x:dark} html b{y:dark}');
+  const off = byId(buildLookStyles({ ...YTM_DEFAULTS, 'ytm-look-deep-dark': false }, css2), 'ytm-logo').text;
+  assert.equal(off, logoCss);
+});

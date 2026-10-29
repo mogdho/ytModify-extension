@@ -122,3 +122,59 @@ export function getSettingDisplayText(setting, value) {
   }
   return `${value}${setting.unit || '%'}`;
 }
+
+/**
+ * The full set of writes for one change made in the popup, including the
+ * linked settings the old menu changed with it (settings-effects.js does the
+ * same on the page). Lets the popup store a consistent state even when no
+ * watch page is open.
+ * @returns {Record<string, any>} name → value, starting with the changed setting
+ */
+export function derivedWrites(config, name, value, values) {
+  const def = (n) => config.find((s) => s.name === n)?.default;
+  const writes = { [name]: value };
+  const set = (n, v) => {
+    if (values[n] !== v) writes[n] = v;
+  };
+
+  if (name === 'blur2' && !values.advancedSettings) {
+    set('edge', value <= 5 ? 2 : value >= 42.5 ? 17 : value / 2.5);
+  }
+
+  const clipController = {
+    horizontalBarsClipPercentage: 'detectHorizontalBarSizeEnabled',
+    verticalBarsClipPercentage: 'detectVerticalBarSizeEnabled',
+  }[name];
+  if (clipController && values[clipController]) set(clipController, false);
+
+  const controlledClip = {
+    detectHorizontalBarSizeEnabled: 'horizontalBarsClipPercentage',
+    detectVerticalBarSizeEnabled: 'verticalBarsClipPercentage',
+  }[name];
+  if (controlledClip) set(controlledClip, def(controlledClip));
+
+  if (name === 'frameFading') {
+    if (value > 0) {
+      set('framerateLimit', 30);
+      set('frameBlending', false);
+    } else {
+      set('framerateLimit', def('framerateLimit'));
+    }
+  }
+
+  if (name === 'frameBlending') {
+    if (value) {
+      set('framerateLimit', 0);
+      set('frameFading', def('frameFading'));
+    } else {
+      set('framerateLimit', def('framerateLimit'));
+    }
+  }
+
+  if (name === 'framerateLimit') {
+    set('frameBlending', false);
+    set('frameFading', def('frameFading'));
+  }
+
+  return writes;
+}
