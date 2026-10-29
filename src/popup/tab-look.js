@@ -19,7 +19,6 @@ export function renderLookTab(root, settings, save) {
   });
   const scale = sliderRow({
     label: 'How much bigger',
-    hint: 'Your style used 15%',
     min: PLAYER_SCALE_MIN,
     max: PLAYER_SCALE_MAX,
     value: settings['ytm-look-player-scale'],
