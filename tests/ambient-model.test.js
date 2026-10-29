@@ -20,8 +20,6 @@ const ESSENTIAL_DEFAULT = [
   'blur2',
   'spread',
   'frameBlending',
-  'enableInViews',
-  'theme',
 ];
 
 test('only the essential settings are shown, in settings-config order', () => {
@@ -46,7 +44,7 @@ test('smooth motion strength appears only with smooth motion on', () => {
 test('sections are only the ones with essential settings', () => {
   assert.deepEqual(
     build().map((s) => s.label),
-    ['Quality', 'Remove black & colored bars', 'Filters', 'Ambient light', 'View modes', 'General']
+    ['Quality', 'Remove black & colored bars', 'Filters', 'Ambient light']
   );
 });
 

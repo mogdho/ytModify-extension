@@ -20,8 +20,6 @@ export const AMBIENT_KEEP = new Set([
   'spread',
   'frameBlending',
   'frameBlendingSmoothness',
-  'enableInViews',
-  'theme',
 ]);
 
 export const defaultValues = (config) => Object.fromEntries(config.map((s) => [s.name, s.default]));
