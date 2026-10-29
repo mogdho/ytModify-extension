@@ -17,4 +17,5 @@ const entry = (input, file, format = 'iife') => ({
 
 export default [
   entry('src/background.js', 'dist/background.js', 'es'),
+  entry('src/look/look-content.js', 'dist/look/look-content.js'),
 ];

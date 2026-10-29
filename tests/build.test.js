@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = join(import.meta.dirname, '..');
@@ -28,6 +28,12 @@ test('dist manifest is valid', () => {
   files.push(manifest.action.default_popup);
 
   for (const file of files) {
+    // "dir/*" entries only need their folder to exist and be non-empty.
+    if (file.endsWith('/*')) {
+      const dir = join(dist, file.slice(0, -2));
+      assert.ok(existsSync(dir) && readdirSync(dir).length > 0, `missing in dist: ${file}`);
+      continue;
+    }
     assert.ok(existsSync(join(dist, file)), `missing in dist: ${file}`);
   }
 });

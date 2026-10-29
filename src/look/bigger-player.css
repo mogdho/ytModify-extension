@@ -1,0 +1,64 @@
+/* YouTube Bigger Default Player by Mogdho Paul. The 1.15 multiplier is now var(--ytm-player-scale). */
+/* 
+     * 1. Expand the entire page layout to make room for the larger player.
+     */
+    ytd-watch-flexy:not([theater]):not([fullscreen]) {
+        --ytd-watch-flexy-max-player-width: calc(1280px * var(--ytm-player-scale)) !important;
+        padding-left: 0 !important;
+    }
+
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #columns {
+        max-width: 98vw !important;
+        margin-left: 4px !important;
+        padding-left: 4px !important;
+    }
+
+    /* 
+     * 2. Make the primary column (which holds the player and comments) 15% larger.
+     */
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #primary {
+        min-width: calc(var(--ytd-watch-flexy-min-player-width, 640px) * var(--ytm-player-scale)) !important;
+        max-width: calc(var(--ytd-watch-flexy-max-player-width, 1280px) * var(--ytm-player-scale)) !important;
+        flex-basis: calc(var(--ytd-watch-flexy-max-player-width, 1280px) * var(--ytm-player-scale)) !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    /* Prevent sidebar squeeze on narrow viewports */
+    @media (max-width: 1400px) {
+        ytd-watch-flexy:not([theater]):not([fullscreen]) #primary {
+            min-width: unset !important;
+            max-width: 100% !important;
+            flex-basis: auto !important;
+        }
+    }
+
+    /* 
+     * 3. Strip the hardcoded JS limits on the player containers so they can expand.
+     */
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #player-container-outer,
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #player-container-inner,
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #player-container {
+        max-width: none !important;
+        width: 100% !important;
+    }
+
+    /* 
+     * 4. Make the player HEIGHT genuinely responsive instantly.
+     */
+    ytd-watch-flexy:not([theater]):not([fullscreen]) #player-container-inner {
+        padding-top: 56.25% !important; /* 16:9 Aspect Ratio */
+        height: auto !important;
+        position: relative !important;
+    }
+
+    /* 
+     * 5. Ensure the actual video player fills this responsive aspect-ratio box.
+     */
+    ytd-watch-flexy:not([theater]):not([fullscreen]) ytd-player {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }

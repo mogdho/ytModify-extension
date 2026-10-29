@@ -1,0 +1,21 @@
+/* YouTube Sans font style (from the owner's Stylus set). */
+html, body, ytd-app {
+    font-family: 'YouTube Sans', 'Roboto', 'Arial', sans-serif !important;
+}
+
+/* Explicit overrides for form elements and specific UI parts */
+input, textarea, select, button, 
+.ytd-searchbox, .ytp-menuitem-label {
+    font-family: 'YouTube Sans', 'Roboto', 'Arial', sans-serif !important;
+}
+
+/* Center alignments */
+.ytp-time-current, 
+.ytp-time-duration, 
+#contextual-info.ytd-engagement-panel-title-header-renderer, 
+.animatedRollingCharacterHost div, 
+span#vote-count-middle, 
+div.yt-spec-button-shape-next__button-text-content, 
+label.yt-spec-button-shape-with-label {
+    text-align: center !important;
+}

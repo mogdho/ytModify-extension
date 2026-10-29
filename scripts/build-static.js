@@ -10,6 +10,7 @@ const dist = (p) => join(root, 'dist', p);
 // [from (under src/), to (under dist/)]
 const STATIC = [
   ['images', 'images'],
+  ['look/images', 'look/images'],
   ['popup/popup.html', 'popup/popup.html'],
   ['popup/popup.css', 'popup/popup.css'],
 ];
