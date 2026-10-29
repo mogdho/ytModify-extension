@@ -17,6 +17,7 @@ import {
 } from './libs/errors/dom';
 import { AmbientlightError } from './libs/errors/ambient-light-error';
 import ErrorReporter from './libs/errors/error-reporter';
+import { STATUS_MESSAGE, ambientStatus } from './libs/ytm-bridge-core';
 import Ambientlight from './libs/ambientlight';
 import Settings from './libs/settings';
 import { contentScript } from './libs/messaging/content';
@@ -450,3 +451,16 @@ const onLoad = wrapErrorHandler(async function onLoadCallback() {
     ErrorReporter.captureException(ex);
   }
 })();
+
+// ytModify: answer the popup's status question (warnings used to show in the
+// in-player menu). Only the top frame answers.
+if (window === window.top) {
+  try {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message?.type !== STATUS_MESSAGE) return;
+      sendResponse(ambientStatus(window.ambientlight));
+    });
+  } catch {
+    // Orphaned script.
+  }
+}

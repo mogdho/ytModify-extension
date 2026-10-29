@@ -30,3 +30,16 @@ export const DEEP_DARK_KEY = 'ytm-look-deep-dark';
 
 export const effectiveAmbientValue = (name, stored, deepDarkOn) =>
   deepDarkOn && name in DEEP_DARK_LOCKED ? DEEP_DARK_LOCKED[name] : stored;
+
+// The popup asks the active tab for Ambient light's status with this message.
+export const STATUS_MESSAGE = 'ytm-ambient-status';
+export const NOT_LOADED_STATUS = Object.freeze({
+  loaded: false,
+  warning: null,
+  info: null,
+  webGLCrashed: false,
+  webGLCrashText: null,
+  runtime: null,
+});
+
+export const ambientStatus = (ambientlight) => ambientlight?.settings?.getStatus?.() ?? NOT_LOADED_STATUS;

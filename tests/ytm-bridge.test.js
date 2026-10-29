@@ -55,3 +55,18 @@ test('Deep Dark locks theme and page greyness', () => {
   assert.equal(effectiveAmbientValue('pageBackgroundGreyness', 20, false), 20);
   assert.equal(effectiveAmbientValue('blur2', 30, true), 30);
 });
+
+import { ambientStatus, NOT_LOADED_STATUS, STATUS_MESSAGE } from '../src/ambient/scripts/libs/ytm-bridge-core.js';
+
+test('status before Ambient light has loaded', () => {
+  assert.equal(STATUS_MESSAGE, 'ytm-ambient-status');
+  assert.deepEqual(ambientStatus(undefined), NOT_LOADED_STATUS);
+  assert.deepEqual(ambientStatus(false), NOT_LOADED_STATUS);
+  assert.equal(NOT_LOADED_STATUS.loaded, false);
+  assert.equal(NOT_LOADED_STATUS.warning, null);
+});
+
+test('status comes from the page settings once loaded', () => {
+  const status = { loaded: true, warning: 'x' };
+  assert.equal(ambientStatus({ settings: { getStatus: () => status } }), status);
+});
