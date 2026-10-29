@@ -6,36 +6,48 @@ import { CONTROLLED_SETTINGS, DEFAULT_RUNTIME, isOptionalSettingVisible } from '
 // Shown as the tab's master switch instead of a row.
 const MASTER = 'enabled';
 
+// The settings the popup shows. Every other Ambient light setting stays at its
+// saved or default value; it just isn't offered, to keep the tab simple.
+export const AMBIENT_KEEP = new Set([
+  'framerateLimit',
+  'detectHorizontalBarSizeEnabled',
+  'detectVerticalBarSizeEnabled',
+  'detectVideoFillScaleEnabled',
+  'brightness',
+  'vibrance',
+  'saturation',
+  'blur2',
+  'spread',
+  'frameBlending',
+  'frameBlendingSmoothness',
+  'enableInViews',
+  'theme',
+]);
+
 export const defaultValues = (config) => Object.fromEntries(config.map((s) => [s.name, s.default]));
 
-// Per-browser adjustments the page also makes (settings.js getStoredSettingsCached).
-function adjust(setting, values) {
-  if (setting.name === 'spread' && !values.webGL) return { ...setting, max: 200 };
-  if (setting.name === 'saturation' && values.webGL) return { ...setting, advanced: true };
-  return setting;
-}
+// Per-browser adjustment the page also makes (settings.js getStoredSettingsCached).
+const adjust = (setting, values) => (setting.name === 'spread' && !values.webGL ? { ...setting, max: 200 } : setting);
 
 /**
  * @param config SettingsConfig
  * @param values current setting values by name (stored, else default)
  * @param {{runtime?: object}} opts
- * @returns Array<{label, name, collapsed, settings: Array<{setting, disabled, disabledReason?, controlledBy?}>}>
+ * @returns Array<{label, name, settings: Array<{setting, disabled, disabledReason?, controlledBy?}>}>
  */
 export function buildAmbientSections(config, values, { runtime = DEFAULT_RUNTIME } = {}) {
-  const advanced = !!values.advancedSettings;
   const sections = [];
   let current = null;
 
   for (const raw of config) {
     if (raw.type === 'section') {
-      current = raw.advanced && !advanced ? null : { label: raw.label, name: raw.name, collapsed: !!values[raw.name], settings: [] };
-      if (current) sections.push(current);
+      current = { label: raw.label, name: raw.name, settings: [] };
+      sections.push(current);
       continue;
     }
-    if (!current || raw.name === MASTER) continue;
+    if (!current || raw.name === MASTER || !AMBIENT_KEEP.has(raw.name)) continue;
 
     const setting = adjust(raw, values);
-    if (setting.advanced && !advanced) continue;
     if (!isOptionalSettingVisible(setting.name, values, runtime)) continue;
 
     const entry = { setting, disabled: false };
@@ -44,31 +56,16 @@ export function buildAmbientSections(config, values, { runtime = DEFAULT_RUNTIME
       entry.disabledReason = setting.disabled;
     } else if (!values.webGL && WebGLOnlySettings.includes(setting.name)) {
       entry.disabled = true;
-      entry.disabledReason = 'Needs the WebGL renderer (Quality section)';
+      entry.disabledReason = 'Needs WebGL, which is turned off';
     }
 
     const controlled = CONTROLLED_SETTINGS.find((c) => c.name === setting.name);
-    const controller = controlled?.controllers.find((name) => values[name]);
-    const controllerConfig = controller && config.find((s) => s.name === controller);
-    if (controllerConfig && (advanced || !controllerConfig.advanced)) {
-      entry.controlledBy = controllerConfig.label;
-    }
+    const controller = controlled?.controllers.find((name) => values[name] && AMBIENT_KEEP.has(name));
+    if (controller) entry.controlledBy = config.find((s) => s.name === controller)?.label;
 
     current.settings.push(entry);
   }
   return sections.filter((s) => s.settings.length);
-}
-
-export function filterSections(sections, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) return sections;
-  return sections
-    .map((s) => ({
-      ...s,
-      collapsed: false,
-      settings: s.settings.filter((e) => `${e.setting.label} ${e.setting.description ?? ''}`.toLowerCase().includes(q)),
-    }))
-    .filter((s) => s.settings.length);
 }
 
 // Settings file export, in the same format as Ambient light's own options page:

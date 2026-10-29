@@ -1,9 +1,9 @@
-// Ambient tab: every Ambient light setting, with search, sections, shortcut
+// Ambient tab: the essential Ambient light settings, grouped by section, shortcut
 // keys, status of the current tab, and file import/export.
 import SettingsConfig, { prepareSettingsConfigOnce } from '../ambient/scripts/libs/settings-config.js';
 import { getSettingDisplayText, derivedWrites } from '../ambient/scripts/libs/settings-meta.js';
 import { POPUP_ORIGIN_KEY, STATUS_MESSAGE } from '../ambient/scripts/libs/ytm-bridge-core.js';
-import { buildAmbientSections, filterSections, buildExport, parseImport } from './ambient-model.js';
+import { buildAmbientSections, buildExport, parseImport } from './ambient-model.js';
 import { el, switchRow, sliderRow, debounce } from './ui.js';
 import { safeStorage } from '../shared/ytm-settings.js';
 
@@ -44,7 +44,6 @@ export async function renderAmbientTab(root) {
 
   let stored = await safeStorage.get(null);
   let status = await activeTabStatus();
-  let query = '';
   let lastSignature = '';
   const updaters = new Map(); // setting name → (values, keys) => void
 
@@ -66,19 +65,9 @@ export async function renderAmbientTab(root) {
   const masterKey = keyField('enabled', 'Ambient light', readKeys(stored).enabled);
   master.row.insertBefore(masterKey.input, master.row.lastElementChild);
   const statusBox = el('div', { class: 'status', role: 'status', hidden: true });
-  const search = el('input', {
-    class: 'search',
-    type: 'search',
-    placeholder: 'Search settings…',
-    'aria-label': 'Search Ambient light settings',
-    oninput: () => {
-      query = search.value;
-      render(true);
-    },
-  });
   const list = el('div', { class: 'sections' });
   const footer = renderFooter(() => stored);
-  root.replaceChildren(master.row, statusBox, el('div', { class: 'search-row' }, search), list, footer);
+  root.replaceChildren(master.row, statusBox, list, footer);
 
   function renderStatus() {
     const lines = [];
@@ -94,17 +83,14 @@ export async function renderAmbientTab(root) {
   function render(force = false) {
     const values = readValues(stored);
     const keys = readKeys(stored);
-    const sections = filterSections(
-      buildAmbientSections(SettingsConfig, values, { runtime: status.runtime ?? undefined }),
-      query
-    );
+    const sections = buildAmbientSections(SettingsConfig, values, { runtime: status.runtime ?? undefined });
     master.set(values.enabled);
     masterKey.set(keys.enabled);
 
     // Rebuild only when the set of rows changes; otherwise update in place so
     // a slider being dragged keeps working.
     const signature = JSON.stringify(
-      sections.map((s) => [s.name, s.collapsed, s.settings.map((e) => [e.setting.name, e.disabled, e.controlledBy, e.setting.max])])
+      sections.map((s) => [s.name, s.settings.map((e) => [e.setting.name, e.disabled, e.controlledBy, e.setting.max])])
     );
     if (!force && signature === lastSignature) {
       for (const update of updaters.values()) update(values, keys);
@@ -114,27 +100,13 @@ export async function renderAmbientTab(root) {
     updaters.clear();
 
     if (!sections.length) {
-      list.replaceChildren(el('p', { class: 'empty' }, query ? `No settings match “${query}”.` : 'No settings.'));
+      list.replaceChildren(el('p', { class: 'empty' }, 'No settings.'));
       return;
     }
     list.replaceChildren(
       ...sections.map((section) => {
-        const header = el(
-          'button',
-          {
-            type: 'button',
-            class: 'section__head',
-            'aria-expanded': String(!section.collapsed),
-            onclick: () => {
-              if (query) return;
-              // Section state isn't page state: no origin marker needed.
-              safeStorage.set({ [KEY(section.name)]: !section.collapsed });
-            },
-          },
-          el('span', {}, section.label),
-          el('span', { class: 'section__chevron', 'aria-hidden': 'true' }, section.collapsed ? '▸' : '▾')
-        );
-        const body = el('div', { class: 'section__body', hidden: section.collapsed });
+        const header = el('h3', { class: 'section__head' }, section.label);
+        const body = el('div', { class: 'section__body' });
         for (const entry of section.settings) body.append(renderSetting(entry, values, keys));
         return el('div', { class: 'section' }, header, body);
       })

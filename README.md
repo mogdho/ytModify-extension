@@ -37,7 +37,7 @@ After pulling changes, run `npm run build` again, then click the reload icon on 
 | **PiP** | Auto pop-out (master switch): when switching tabs, pop back in when I return. Also on Shorts. **Pop-out key** (default `P`): press it on a YouTube page to pop out or back in. |
 | **Look** | Player size Normal/Big, with a "How much bigger" slider. YouTube Sans font. Premium logo. |
 | **Quality** | Fixed playback quality per view: Normal & pop-out (default 720p), Fullscreen (1080p), Mini player (360p), or Auto. If a video lacks your choice, the next lower quality is used. Picking a quality yourself in YouTube's menu stays until the view or video changes. |
-| **Ambient** | Every Ambient light setting, in its original sections, plus a search box. Keyboard-shortcut keys can be changed. File import/export and reset. A status line shows warnings from the current tab. |
+| **Ambient** | The essentials: on/off (key `G`), theme, where it shows (normal / theater / fullscreen), blur, spread, smooth motion, brightness, colours, saturation, black-bar removal (keys `B`, `V`, `H`) and a framerate limit. Shortcut keys can be changed. File import/export and reset. A status line shows warnings from the current tab. Ambient light's other ~60 settings keep their default values; they are not shown, to keep the tab simple (see `AMBIENT_KEEP` in `src/popup/ambient-model.js` to bring one back). |
 
 ### Auto pop-out notes
 

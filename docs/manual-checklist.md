@@ -32,8 +32,7 @@ Alt-tab alone never pops out (Chrome needs a key press); use the pop-out key.
 - [ ] The toolbar icon opens the popup with PiP · Look · Ambient tabs; it reopens on the last tab used.
 - [ ] Look: every control changes an open watch tab live (Normal/Big, size slider, font, logo).
 - [ ] Ambient: changing a setting in each section changes the glow live. Double-clicking a control resets it.
-- [ ] Ambient: searching "bar" finds the black-bar settings.
-- [ ] Ambient: Settings → Advanced shows and hides the advanced settings.
+- [ ] Ambient: the tab shows only the essential settings (no search box, no folding sections).
 - [ ] Ambient: the key field next to "Ambient light" (G) can be changed, and the new key works on the page right away.
 - [ ] Ambient: Export, then Reset to defaults, then Import restores your values.
 - [ ] Ambient: "Appearance (theme)" (General) and "Background greyness" (Page content) change the page live.
