@@ -40,4 +40,5 @@ export default [
   entry('src/pip/pip-main.js', 'dist/pip/pip-main.js'),
   entry('src/pip/pip-isolated.js', 'dist/pip/pip-isolated.js'),
   ...['content', 'content-main', 'injected', 'live-chat'].map(ambient),
+  entry('src/popup/popup.js', 'dist/popup/popup.js'),
 ];

@@ -1,5 +1,25 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>ytModify</title></head>
-<body>ytModify</body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ytModify</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="head">
+    <img src="../images/icon-32.png" width="22" height="22" alt="">
+    <span>ytModify</span>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button id="tab-pip" class="tab" role="tab" aria-controls="panel-pip">PiP</button>
+    <button id="tab-look" class="tab" role="tab" aria-controls="panel-look">Look</button>
+    <button id="tab-ambient" class="tab" role="tab" aria-controls="panel-ambient">Ambient</button>
+  </nav>
+  <main>
+    <section id="panel-pip" class="panel" role="tabpanel" aria-labelledby="tab-pip"></section>
+    <section id="panel-look" class="panel" role="tabpanel" aria-labelledby="tab-look" hidden></section>
+    <section id="panel-ambient" class="panel" role="tabpanel" aria-labelledby="tab-ambient" hidden></section>
+  </main>
+  <script src="popup.js"></script>
+</body>
 </html>
