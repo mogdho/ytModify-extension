@@ -70,12 +70,64 @@
       "js": [
         "pip/pip-isolated.js"
       ]
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/embed/*"
+      ],
+      "js": [
+        "ambient/scripts/content.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/embed/*"
+      ],
+      "js": [
+        "ambient/scripts/content.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*"
+      ],
+      "exclude_matches": [
+        "https://www.youtube.com/live_chat?is_popout=1*"
+      ],
+      "css": [
+        "ambient/styles/live-chat.css"
+      ],
+      "js": [
+        "ambient/scripts/live-chat.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
         "look/images/*"
+      ],
+      "matches": [
+        "https://www.youtube.com/*"
+      ]
+    },
+    {
+      "resources": [
+        "ambient/styles/content.css",
+        "ambient/scripts/content-main.js",
+        "ambient/scripts/injected.js",
+        "ambient/images/noise-1.png",
+        "ambient/images/noise-2.png",
+        "ambient/images/noise-3.png"
       ],
       "matches": [
         "https://www.youtube.com/*"

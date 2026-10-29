@@ -11,12 +11,16 @@ const dist = (p) => join(root, 'dist', p);
 const STATIC = [
   ['images', 'images'],
   ['look/images', 'look/images'],
+  ['ambient/images', 'ambient/images'],
   ['popup/popup.html', 'popup/popup.html'],
   ['popup/popup.css', 'popup/popup.css'],
 ];
 
 // [scss (under src/), css (under dist/)]
-const SASS = [];
+const SASS = [
+  ['ambient/styles/content.scss', 'ambient/styles/content.css'],
+  ['ambient/styles/live-chat.scss', 'ambient/styles/live-chat.css'],
+];
 
 for (const [from, to] of STATIC) {
   if (!existsSync(src(from))) continue;
