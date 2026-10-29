@@ -43,6 +43,33 @@
       ],
       "run_at": "document_start",
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "https://www.youtube.com/embed/*",
+        "https://www.youtube.com/live_chat*"
+      ],
+      "run_at": "document_start",
+      "js": [
+        "pip/pip-main.js"
+      ],
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "https://www.youtube.com/embed/*",
+        "https://www.youtube.com/live_chat*"
+      ],
+      "run_at": "document_start",
+      "js": [
+        "pip/pip-isolated.js"
+      ]
     }
   ],
   "web_accessible_resources": [

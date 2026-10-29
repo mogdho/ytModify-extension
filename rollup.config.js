@@ -18,4 +18,6 @@ const entry = (input, file, format = 'iife') => ({
 export default [
   entry('src/background.js', 'dist/background.js', 'es'),
   entry('src/look/look-content.js', 'dist/look/look-content.js'),
+  entry('src/pip/pip-main.js', 'dist/pip/pip-main.js'),
+  entry('src/pip/pip-isolated.js', 'dist/pip/pip-isolated.js'),
 ];
