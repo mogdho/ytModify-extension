@@ -13,8 +13,7 @@ export function renderPipTab(root, settings, save) {
   });
   const subs = [
     ['ytm-pip-tab-switch', 'When switching tabs'],
-    ['ytm-pip-app-switch', 'When switching to another app', 'Chrome only allows this within a few seconds of a click or key press on the page'],
-    ['ytm-pip-return', 'Pop back in when I return'],
+    ['ytm-pip-return', 'Pop back in when I return', 'To this tab, or to Chrome after alt-tab'],
   ].map(([key, label, hint]) => ({
     key,
     ...switchRow({ label, hint, sub: true, checked: settings[key], onChange: (v) => save(key, v) }),

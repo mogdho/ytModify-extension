@@ -89,7 +89,6 @@ export function createPipController({ document, location, delay = (fn, ms) => se
     // During alt-tab Chrome can report focus lost and gained in the same
     // instant; trust the page's own focus state.
     if (cause === 'app-focus' && !document.hasFocus()) return;
-    if (cause === 'app-blur' && document.hasFocus()) return;
     const video = getVideo();
     if (!video) return;
 

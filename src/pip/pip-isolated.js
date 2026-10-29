@@ -1,5 +1,5 @@
-// Isolated-world relay: passes PiP settings and background focus signals to
-// the MAIN-world controller (pip-main.js), which can't read chrome.storage.
+// Isolated-world relay: passes ytModify settings and the background "Chrome got
+// focus" signal to the MAIN-world scripts, which can't read chrome.storage.
 import { getStoredYtmSettings, isExtensionAlive, pipSettingsForPage, safeStorage } from '../shared/ytm-settings.js';
 
 const post = (message) => window.postMessage({ source: 'ytm', ...message }, location.origin);

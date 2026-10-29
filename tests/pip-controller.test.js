@@ -117,13 +117,16 @@ test('a failed request is retried only while still hidden', async () => {
   assert.deepEqual(page.calls, ['enter:main']);
 });
 
-test('app switch enters at once and returning exits', async () => {
+test('alt-tab never pops out by itself; returning still pops back in', async () => {
   const page = fakePage();
   const v = fakeVideo(page, 'main');
   page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
   const c = controllerFor(page);
   page.document.focused = false;
   c.handle('app-blur');
+  await settle();
+  assert.deepEqual(page.calls, []);
+  c.toggle(); // the pop-out key, pressed before alt-tab
   await settle();
   assert.deepEqual(page.calls, ['enter:main']);
   page.document.focused = true;
@@ -139,8 +142,8 @@ test('on Shorts the Shorts player is used, not a leftover watch player', async (
   page.document.querySelector = (sel) =>
     ({ '#movie_player video.html5-main-video': watch, '#shorts-player video': shorts })[sel] ?? null;
   const c = controllerFor(page, { ...YTM_DEFAULTS, 'ytm-pip-shorts': true });
-  page.document.focused = false;
-  c.handle('app-blur');
+  page.document.hidden = true;
+  c.handle('media-session');
   await settle();
   assert.deepEqual(page.calls, ['enter:shorts']);
 });
@@ -150,8 +153,9 @@ test('a home-page hover preview never pops out', async () => {
   const preview = fakeVideo(page, 'preview');
   page.document.querySelector = (sel) => (sel === 'video' ? preview : null);
   const c = controllerFor(page);
-  page.document.focused = false;
-  c.handle('app-blur');
+  page.document.hidden = true;
+  c.handle('media-session');
+  c.toggle();
   await settle();
   assert.deepEqual(page.calls, []);
 });
@@ -216,11 +220,6 @@ test('focus signals that contradict the page focus are ignored (alt-tab flicker)
   page.document.pictureInPictureElement = v;
   page.document.focused = false;
   c.handle('app-focus'); // arrives during alt-tab while the page is not focused
-  await settle();
-  assert.deepEqual(page.calls, []);
-  page.document.pictureInPictureElement = null;
-  page.document.focused = true;
-  c.handle('app-blur'); // page is focused again: stale blur
   await settle();
   assert.deepEqual(page.calls, []);
 });

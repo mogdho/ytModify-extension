@@ -3,7 +3,6 @@
 const ENTER_CAUSES = {
   'tab-hidden': 'ytm-pip-tab-switch',
   'media-session': 'ytm-pip-tab-switch',
-  'app-blur': 'ytm-pip-app-switch',
 };
 const EXIT_CAUSES = new Set(['tab-visible', 'app-focus']);
 

@@ -14,15 +14,14 @@ Disable yt-mini-PIP, Ambient light and the Stylus styles first, so they don't mi
 ## PiP findings
 Play a watch video with sound, then:
 - [ ] (a) Switch to another tab: the video pops out. Come back: it pops back in.
-- [ ] (b) Alt-tab to another app: the video pops out. Come back: it pops back in.
 - [ ] (c) Popup → PiP → "Pop back in when I return" off: does the window stay open when you return? (Chrome may close it itself.)
-- [ ] (d) "When switching tabs" off, app switch on: tab switch no longer pops out, but alt-tab still does.
+- [ ] (d) "When switching tabs" off: tab switch no longer pops out.
 - [ ] (e) A paused video: nothing pops out.
 - [ ] (f) DevTools console (F12): no red errors from ytModify during any of the above.
 - [ ] (g) A Short with "Also on Shorts" off: no pop-out. With it on: pops out.
 - [ ] (h) Opening the ytModify popup on a playing video does NOT pop it out.
 
-If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds that path to the controller.
+Alt-tab alone never pops out (Chrome needs a key press); use the pop-out key.
 
 ## Ambient light
 - [ ] A watch video has a coloured glow around the player.

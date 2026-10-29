@@ -4,7 +4,6 @@
 export const YTM_DEFAULTS = Object.freeze({
   'ytm-pip-enabled': true,
   'ytm-pip-tab-switch': true,
-  'ytm-pip-app-switch': true,
   'ytm-pip-return': true,
   'ytm-pip-shorts': false,
   'ytm-pip-key': 'P',

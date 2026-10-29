@@ -32,13 +32,12 @@ test('tab-switch toggle off blocks tab hide', () => {
   assert.equal(d('tab-hidden', { settings: { 'ytm-pip-tab-switch': false } }), 'none');
 });
 
-test('app-switch toggle off blocks app blur', () => {
-  assert.equal(d('app-blur'), 'enter');
-  assert.equal(d('app-blur', { settings: { 'ytm-pip-app-switch': false } }), 'none');
+test('switching to another app never pops out by itself', () => {
+  assert.equal(d('app-blur'), 'none');
 });
 
 test('master switch off blocks every cause', () => {
-  for (const cause of ['tab-hidden', 'app-blur', 'tab-visible', 'app-focus', 'media-session']) {
+  for (const cause of ['tab-hidden', 'tab-visible', 'app-focus', 'media-session']) {
     assert.equal(d(cause, { settings: { 'ytm-pip-enabled': false }, inPip: true }), 'none', cause);
   }
 });

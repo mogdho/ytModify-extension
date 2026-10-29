@@ -2,7 +2,7 @@
 
 One Chrome extension for YouTube that combines:
 
-- **Auto pop-out.** A playing video pops out into picture-in-picture when you switch tabs or alt-tab to another app, and pops back in when you return.
+- **Auto pop-out.** A playing video pops out into picture-in-picture when you switch tabs, and pops back in when you return. Press the pop-out key (`P`) to pop out any time, for example before you alt-tab.
 - **Fixed quality per view.** 1080p in fullscreen, 720p in the normal player and pop-out, 360p in the mini player, or whatever you choose.
 - **Look.** Deep Dark theme (with your own accent colour), YouTube Sans font, Premium logo, and a bigger player you can switch between Normal and Big.
 - **Ambient light.** The full Ambient light for YouTube extension, rebuilt from its source: glow around the video, black-bar removal, smooth motion, HDR filters, WebGL renderer, stats and more.
@@ -34,7 +34,7 @@ After pulling changes, run `npm run build` again, then click the reload icon on 
 
 | Tab | Settings |
 |---|---|
-| **PiP** | Auto pop-out (master switch): when switching tabs, when switching to another app, pop back in when I return. Also on Shorts. **Pop-out key** (default `P`): press it on a YouTube page to pop out or back in. |
+| **PiP** | Auto pop-out (master switch): when switching tabs, pop back in when I return. Also on Shorts. **Pop-out key** (default `P`): press it on a YouTube page to pop out or back in. |
 | **Look** | Player size Normal/Big, with a "How much bigger" slider. Deep Dark theme, with an accent colour. YouTube Sans font. Premium logo. |
 | **Quality** | Fixed playback quality per view: Normal & pop-out (default 720p), Fullscreen (1080p), Mini player (360p), or Auto. If a video lacks your choice, the next lower quality is used. Picking a quality yourself in YouTube's menu stays until the view or video changes. |
 | **Ambient** | Every Ambient light setting, in its original sections, plus a search box. Keyboard-shortcut keys can be changed. File import/export and reset. A status line shows warnings from the current tab. |
@@ -43,7 +43,7 @@ While Deep Dark is on, Ambient light's own "Appearance (theme)" and "Background 
 
 ### Auto pop-out notes
 
-Chrome decides when a page may open picture-in-picture. ytModify uses Chrome's automatic picture-in-picture (Media Session) plus the tab and window focus events. Paused, ended or ad-playing videos never pop out.
+Chrome decides when a page may open picture-in-picture. ytModify uses Chrome's automatic picture-in-picture (Media Session) on tab switches. Paused, ended or ad-playing videos never pop out.
 
 Chrome only lets a page open picture-in-picture by itself on a **tab switch**. For anything else, including alt-tab to another app, it needs a click or key press on the page within the last few seconds. That is why the **pop-out key** exists: press `P` (or your own key) before you alt-tab and the video pops out every time.
 

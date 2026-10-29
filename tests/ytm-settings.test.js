@@ -6,7 +6,6 @@ test('defaults match the spec', () => {
   assert.deepEqual(YTM_DEFAULTS, {
     'ytm-pip-enabled': true,
     'ytm-pip-tab-switch': true,
-    'ytm-pip-app-switch': true,
     'ytm-pip-return': true,
     'ytm-pip-shorts': false,
     'ytm-pip-key': 'P',
@@ -53,6 +52,10 @@ test('unknown player size falls back to big', () => {
 test('unknown popup tab falls back to pip', () => {
   assert.equal(getYtmSettings({ 'ytm-popup-tab': 'ambient' })['ytm-popup-tab'], 'ambient');
   assert.equal(getYtmSettings({ 'ytm-popup-tab': 'nope' })['ytm-popup-tab'], 'pip');
+});
+
+test('the removed app-switch option is gone', () => {
+  assert.equal('ytm-pip-app-switch' in YTM_DEFAULTS, false);
 });
 
 test('unknown keys are ignored', () => {

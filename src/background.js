@@ -1,21 +1,15 @@
-// ytModify service worker: tells YouTube tabs when Chrome loses or regains
-// focus (alt-tab), so the page's PiP controller can pop the video out or in.
+// ytModify service worker: tells the active YouTube tab when Chrome gets focus
+// back (e.g. after alt-tab), so a video popped out with the pop-out key can pop
+// back in. Chrome doesn't allow popping out on alt-tab without a key press, so
+// there is no signal for losing focus.
 
 const YT_TABS = ['https://www.youtube.com/watch*', 'https://www.youtube.com/shorts/*'];
 
-const signal = (tabId, cause) =>
-  chrome.tabs.sendMessage(tabId, { type: 'ytm-pip-signal', cause }).catch(() => {});
-
 chrome.windows.onFocusChanged.addListener(async (windowId) => {
+  if (windowId === chrome.windows.WINDOW_ID_NONE) return;
   try {
-    if (windowId === chrome.windows.WINDOW_ID_NONE) {
-      // Only the visible tab of each window has a video worth popping out.
-      const tabs = await chrome.tabs.query({ url: YT_TABS, active: true });
-      for (const tab of tabs) signal(tab.id, 'app-blur');
-      return;
-    }
     const [tab] = await chrome.tabs.query({ active: true, windowId, url: YT_TABS });
-    if (tab) signal(tab.id, 'app-focus');
+    if (tab) chrome.tabs.sendMessage(tab.id, { type: 'ytm-pip-signal', cause: 'app-focus' }).catch(() => {});
   } catch {
     // Window closed mid-query.
   }
