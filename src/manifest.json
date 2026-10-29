@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "ytModify",
+  "version": "0.0.0",
+  "description": "Auto pop-out, Deep Dark look, bigger player and ambient light for YouTube, in one extension.",
+  "minimum_chrome_version": "121",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "action": {
+    "default_title": "ytModify",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "32": "images/icon-32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "content_scripts": []
+}
