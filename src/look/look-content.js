@@ -1,27 +1,19 @@
 // Isolated-world content script: injects the Look styles and keeps them in
 // sync with the popup, without reloading the page.
-import deepDark from './deep-dark.css';
 import sans from './youtube-sans.css';
 import logo from './premium-logo.css';
 import bigger from './bigger-player.css';
 import { buildLookStyles, isLookExcludedPath } from './look.js';
 import { getStoredYtmSettings, safeStorage } from '../shared/ytm-settings.js';
 
-const CSS = { deepDark, sans, logo, bigger };
-const ALL_IDS = ['ytm-deep-dark', 'ytm-accent', 'ytm-sans', 'ytm-logo', 'ytm-bigger'];
-
-let assetBase = '';
-try {
-  assetBase = chrome.runtime.getURL('look/images');
-} catch {
-  // Orphaned script: images just won't resolve.
-}
+const CSS = { sans, logo, bigger };
+const ALL_IDS = ['ytm-sans', 'ytm-logo', 'ytm-bigger'];
 
 let current = null;
 
 function render() {
   if (!current) return;
-  const styles = isLookExcludedPath(location.pathname) ? [] : buildLookStyles(current, CSS, assetBase);
+  const styles = isLookExcludedPath(location.pathname) ? [] : buildLookStyles(current, CSS);
   const root = document.documentElement;
   const wanted = new Set(styles.map((s) => s.id));
 

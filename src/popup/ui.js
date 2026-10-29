@@ -91,21 +91,6 @@ export function segmentRow({ label, options, value, onChange }) {
   return { row, set };
 }
 
-// A colour picker row.
-export function colorRow({ label, hint, value, onChange, sub = false }) {
-  const input = el('input', { type: 'color', value, class: 'color', 'aria-label': label });
-  input.addEventListener('input', () => onChange(input.value));
-  const row = el('div', { class: `row${sub ? ' row--sub' : ''}` }, labelBlock(label, hint), input);
-  return {
-    row,
-    set: (v) => (input.value = v),
-    setDisabled: (disabled) => {
-      input.disabled = disabled;
-      row.classList.toggle('is-disabled', disabled);
-    },
-  };
-}
-
 export const debounce = (fn, ms) => {
   let t;
   return (...args) => {

@@ -2,7 +2,6 @@
 // built from Ambient light's own settings-config.js.
 import { WebGLOnlySettings } from '../ambient/scripts/libs/settings-config.js';
 import { CONTROLLED_SETTINGS, DEFAULT_RUNTIME, isOptionalSettingVisible } from '../ambient/scripts/libs/settings-meta.js';
-import { DEEP_DARK_LOCKED } from '../ambient/scripts/libs/ytm-bridge-core.js';
 
 // Shown as the tab's master switch instead of a row.
 const MASTER = 'enabled';
@@ -19,10 +18,10 @@ function adjust(setting, values) {
 /**
  * @param config SettingsConfig
  * @param values current setting values by name (stored, else default)
- * @param {{deepDarkOn: boolean, runtime?: object}} opts
+ * @param {{runtime?: object}} opts
  * @returns Array<{label, name, collapsed, settings: Array<{setting, disabled, disabledReason?, controlledBy?}>}>
  */
-export function buildAmbientSections(config, values, { deepDarkOn, runtime = DEFAULT_RUNTIME }) {
+export function buildAmbientSections(config, values, { runtime = DEFAULT_RUNTIME } = {}) {
   const advanced = !!values.advancedSettings;
   const sections = [];
   let current = null;
@@ -37,7 +36,6 @@ export function buildAmbientSections(config, values, { deepDarkOn, runtime = DEF
 
     const setting = adjust(raw, values);
     if (setting.advanced && !advanced) continue;
-    if (deepDarkOn && setting.name in DEEP_DARK_LOCKED) continue;
     if (!isOptionalSettingVisible(setting.name, values, runtime)) continue;
 
     const entry = { setting, disabled: false };

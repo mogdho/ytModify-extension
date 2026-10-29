@@ -5,7 +5,6 @@ Run after `npm run build`. Load `dist/` at `chrome://extensions`: turn on Develo
 Disable yt-mini-PIP, Ambient light and the Stylus styles first, so they don't mix with ytModify.
 
 ## Look
-- [ ] A watch page is Deep Dark (near-black `#111` background).
 - [ ] The font is YouTube Sans.
 - [ ] The top-left logo is the Premium logo.
 - [ ] The player is bigger than with ytModify off.
@@ -31,13 +30,13 @@ Alt-tab alone never pops out (Chrome needs a key press); use the pop-out key.
 
 ## Popup
 - [ ] The toolbar icon opens the popup with PiP · Look · Ambient tabs; it reopens on the last tab used.
-- [ ] Look: every control changes an open watch tab live (Normal/Big, size slider, Deep Dark, accent colour, font, logo).
+- [ ] Look: every control changes an open watch tab live (Normal/Big, size slider, font, logo).
 - [ ] Ambient: changing a setting in each section changes the glow live. Double-clicking a control resets it.
 - [ ] Ambient: searching "bar" finds the black-bar settings.
 - [ ] Ambient: Settings → Advanced shows and hides the advanced settings.
 - [ ] Ambient: the key field next to "Ambient light" (G) can be changed, and the new key works on the page right away.
 - [ ] Ambient: Export, then Reset to defaults, then Import restores your values.
-- [ ] Ambient: with Deep Dark on, "Appearance (theme)" and "Background greyness" are hidden. Turn Deep Dark off and they appear (in General / Page content).
+- [ ] Ambient: "Appearance (theme)" (General) and "Background greyness" (Page content) change the page live.
 
 ## Edge cases
 - [ ] Watch → home → another video, without reloading: the look, ambient glow and pop-out all still work on the new video. *(Checked by Claude in a test browser: look and glow OK; pop-out needs your Chrome.)*
@@ -48,9 +47,8 @@ Alt-tab alone never pops out (Chrome needs a key press); use the pop-out key.
 - [ ] Switching tabs during an ad, or with a paused or ended video: no pop-out, no errors.
 - [ ] Theater mode and fullscreen with Big player plus Ambient light look right.
 
-## Known
-- Deep Dark makes the text on the "Accept all / Reject all" buttons of YouTube's cookie-consent dialog hard to see. This comes from the original Deep Dark style.
-- [ ] On a light-mode YouTube account: watch → home → watch. The page stays dark, and the Premium logo text stays readable.
+## More checks
+- [ ] Premium logo text is readable on both a light-mode and a dark-mode YouTube account.
 - [ ] Turn pop-out off, reload ytModify at `chrome://extensions`, and switch away from an open (not refreshed) YouTube tab: it must not pop out.
 
 ## Quality

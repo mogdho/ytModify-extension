@@ -128,14 +128,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "look/images/*"
-      ],
-      "matches": [
-        "https://www.youtube.com/*"
-      ]
-    },
-    {
-      "resources": [
         "ambient/styles/content.css",
         "ambient/scripts/content-main.js",
         "ambient/scripts/injected.js",

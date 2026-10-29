@@ -4,7 +4,7 @@ One Chrome extension for YouTube that combines:
 
 - **Auto pop-out.** A playing video pops out into picture-in-picture when you switch tabs, and pops back in when you return. Press the pop-out key (`P`) to pop out any time, for example before you alt-tab.
 - **Fixed quality per view.** 1080p in fullscreen, 720p in the normal player and pop-out, 360p in the mini player, or whatever you choose.
-- **Look.** Deep Dark theme (with your own accent colour), YouTube Sans font, Premium logo, and a bigger player you can switch between Normal and Big.
+- **Look.** YouTube Sans font, Premium logo, and a bigger player you can switch between Normal and Big.
 - **Ambient light.** The full Ambient light for YouTube extension, rebuilt from its source: glow around the video, black-bar removal, smooth motion, HDR filters, WebGL renderer, stats and more.
 
 Every setting lives in one popup that opens from the toolbar icon. Changes apply to open YouTube tabs straight away, with no reload.
@@ -35,11 +35,9 @@ After pulling changes, run `npm run build` again, then click the reload icon on 
 | Tab | Settings |
 |---|---|
 | **PiP** | Auto pop-out (master switch): when switching tabs, pop back in when I return. Also on Shorts. **Pop-out key** (default `P`): press it on a YouTube page to pop out or back in. |
-| **Look** | Player size Normal/Big, with a "How much bigger" slider. Deep Dark theme, with an accent colour. YouTube Sans font. Premium logo. |
+| **Look** | Player size Normal/Big, with a "How much bigger" slider. YouTube Sans font. Premium logo. |
 | **Quality** | Fixed playback quality per view: Normal & pop-out (default 720p), Fullscreen (1080p), Mini player (360p), or Auto. If a video lacks your choice, the next lower quality is used. Picking a quality yourself in YouTube's menu stays until the view or video changes. |
 | **Ambient** | Every Ambient light setting, in its original sections, plus a search box. Keyboard-shortcut keys can be changed. File import/export and reset. A status line shows warnings from the current tab. |
-
-While Deep Dark is on, Ambient light's own "Appearance (theme)" and "Background greyness" settings are hidden, so they can't fight the theme. They come back when Deep Dark is off.
 
 ### Auto pop-out notes
 
@@ -66,7 +64,6 @@ npm run build
 
   > MIT License. Copyright (c) 2017 Wessel Kroos
 
-- **YouTube Deep Dark** by RaitaroH, https://github.com/RaitaroH/YouTube-DeepDark (GNU GPL v3.0). Its images are bundled in `src/look/images/`.
 - **YouTube Premium svg logo** by Phoenix~ (CC BY-NC 4.0). Used without changes, for non-commercial use only.
 - **yt-mini-PIP** and **YouTube Bigger Default Player** by Mogdho Paul.
 

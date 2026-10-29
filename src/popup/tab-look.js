@@ -1,10 +1,9 @@
-// Look tab: bigger player, Deep Dark, font and logo.
-import { switchRow, sliderRow, segmentRow, colorRow, debounce } from './ui.js';
+// Look tab: bigger player, font and logo.
+import { switchRow, sliderRow, segmentRow, debounce } from './ui.js';
 import { PLAYER_SCALE_MIN, PLAYER_SCALE_MAX } from '../shared/ytm-settings.js';
 
 export function renderLookTab(root, settings, save) {
   const saveScale = debounce((v) => save('ytm-look-player-scale', v), 150);
-  const saveAccent = debounce((v) => save('ytm-look-accent', v), 150);
 
   const size = segmentRow({
     label: 'Player size',
@@ -28,21 +27,6 @@ export function renderLookTab(root, settings, save) {
     onInput: saveScale,
     sub: true,
   });
-  const deepDark = switchRow({
-    label: 'Deep Dark theme',
-    checked: settings['ytm-look-deep-dark'],
-    onChange: (v) => {
-      save('ytm-look-deep-dark', v);
-      accent.setDisabled(!v);
-    },
-  });
-  const accent = colorRow({
-    label: 'Accent colour',
-    hint: 'Links, highlights, progress bar',
-    value: settings['ytm-look-accent'],
-    onChange: saveAccent,
-    sub: true,
-  });
   const font = switchRow({
     label: 'YouTube Sans font',
     checked: settings['ytm-look-font'],
@@ -55,17 +39,13 @@ export function renderLookTab(root, settings, save) {
   });
 
   scale.setDisabled(settings['ytm-look-player-size'] !== 'big');
-  accent.setDisabled(!settings['ytm-look-deep-dark']);
 
-  root.replaceChildren(size.row, scale.row, deepDark.row, accent.row, font.row, logo.row);
+  root.replaceChildren(size.row, scale.row, font.row, logo.row);
 
   return (next) => {
     size.set(next['ytm-look-player-size']);
     scale.set(next['ytm-look-player-scale']);
     scale.setDisabled(next['ytm-look-player-size'] !== 'big');
-    deepDark.set(next['ytm-look-deep-dark']);
-    accent.set(next['ytm-look-accent']);
-    accent.setDisabled(!next['ytm-look-deep-dark']);
     font.set(next['ytm-look-font']);
     logo.set(next['ytm-look-logo']);
   };

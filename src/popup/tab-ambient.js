@@ -5,7 +5,7 @@ import { getSettingDisplayText, derivedWrites } from '../ambient/scripts/libs/se
 import { POPUP_ORIGIN_KEY, STATUS_MESSAGE } from '../ambient/scripts/libs/ytm-bridge-core.js';
 import { buildAmbientSections, filterSections, buildExport, parseImport } from './ambient-model.js';
 import { el, switchRow, sliderRow, debounce } from './ui.js';
-import { safeStorage, getYtmSettings } from '../shared/ytm-settings.js';
+import { safeStorage } from '../shared/ytm-settings.js';
 
 const KEY = (name) => `setting-${name}`;
 const configOf = (name) => SettingsConfig.find((s) => s.name === name);
@@ -94,9 +94,8 @@ export async function renderAmbientTab(root) {
   function render(force = false) {
     const values = readValues(stored);
     const keys = readKeys(stored);
-    const deepDarkOn = getYtmSettings(stored)['ytm-look-deep-dark'];
     const sections = filterSections(
-      buildAmbientSections(SettingsConfig, values, { deepDarkOn, runtime: status.runtime ?? undefined }),
+      buildAmbientSections(SettingsConfig, values, { runtime: status.runtime ?? undefined }),
       query
     );
     master.set(values.enabled);
@@ -221,7 +220,7 @@ export async function renderAmbientTab(root) {
   render(true);
 
   safeStorage.onChanged(async (changes) => {
-    if (!Object.keys(changes).some((k) => k.startsWith('setting-') || k === 'ytm-look-deep-dark')) return;
+    if (!Object.keys(changes).some((k) => k.startsWith('setting-'))) return;
     stored = await safeStorage.get(null);
     render();
   });

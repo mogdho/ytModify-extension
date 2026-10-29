@@ -11,8 +11,6 @@ test('defaults match the spec', () => {
     'ytm-pip-key': 'P',
     'ytm-look-player-size': 'big',
     'ytm-look-player-scale': 15,
-    'ytm-look-deep-dark': true,
-    'ytm-look-accent': '#ff0033',
     'ytm-look-font': true,
     'ytm-look-logo': true,
     'ytm-quality-enabled': true,
@@ -37,11 +35,6 @@ test('wrong-type scale falls back to default', () => {
 
 test('out-of-range scale is clamped to 30', () => {
   assert.equal(getYtmSettings({ 'ytm-look-player-scale': 99 })['ytm-look-player-scale'], 30);
-});
-
-test('accent must be #rrggbb', () => {
-  assert.equal(getYtmSettings({ 'ytm-look-accent': 'red' })['ytm-look-accent'], '#ff0033');
-  assert.equal(getYtmSettings({ 'ytm-look-accent': '#12ab9f' })['ytm-look-accent'], '#12ab9f');
 });
 
 test('unknown player size falls back to big', () => {
@@ -131,4 +124,9 @@ test('pop-out key defaults to P; one letter/digit or empty (off)', () => {
 
 test('an orphaned page script also drops the pop-out key', () => {
   assert.equal(pipSettingsForPage(false, YTM_DEFAULTS)['ytm-pip-key'], '');
+});
+
+test('Deep Dark and accent settings are gone', () => {
+  assert.equal('ytm-look-deep-dark' in YTM_DEFAULTS, false);
+  assert.equal('ytm-look-accent' in YTM_DEFAULTS, false);
 });

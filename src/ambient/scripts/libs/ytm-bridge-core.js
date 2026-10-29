@@ -21,16 +21,6 @@ export function extractPopupChanges(changes) {
   return result;
 }
 
-// While ytModify's Deep Dark theme is on, Ambient light stays on its Dark theme
-// (theme 1; on "Default" it paints the page white for light-mode accounts) and
-// must not grey the page. These settings are forced (in memory only, so the saved
-// values come back when Deep Dark is turned off).
-export const DEEP_DARK_LOCKED = Object.freeze({ theme: 1, pageBackgroundGreyness: 0 });
-export const DEEP_DARK_KEY = 'ytm-look-deep-dark';
-
-export const effectiveAmbientValue = (name, stored, deepDarkOn) =>
-  deepDarkOn && name in DEEP_DARK_LOCKED ? DEEP_DARK_LOCKED[name] : stored;
-
 // The popup asks the active tab for Ambient light's status with this message.
 export const STATUS_MESSAGE = 'ytm-ambient-status';
 export const NOT_LOADED_STATUS = Object.freeze({
@@ -47,22 +37,5 @@ export const ambientStatus = (ambientlight) => ambientlight?.settings?.getStatus
 // The page caches stored settings until Ambient light starts on a watch page.
 // Popup changes made before then must drop that cache.
 export const invalidatesSettingsCache = (changes) =>
-  Object.keys(changes).some((key) => key.startsWith('setting-') || key === DEEP_DARK_KEY);
+  Object.keys(changes).some((key) => key.startsWith('setting-'));
 
-/**
- * Deep Dark lock state change for the locked settings.
- * @param {{wasOn: boolean, on: boolean, current: object, unlocked: object}} s
- *   current: the page's in-memory values; unlocked: the user's own values kept aside
- * @returns {{values: object, unlocked: object}} values to use now, values to keep aside
- */
-export function lockTransition({ wasOn, on, current, unlocked }) {
-  const names = Object.keys(DEEP_DARK_LOCKED);
-  const pick = (from) => Object.fromEntries(names.map((n) => [n, from[n]]));
-  if (on) {
-    // Entering the lock: the in-memory values are the user's latest choice.
-    const kept = wasOn ? pick({ ...current, ...unlocked }) : pick(current);
-    return { values: { ...DEEP_DARK_LOCKED }, unlocked: kept };
-  }
-  const restored = wasOn ? pick({ ...current, ...unlocked }) : pick(current);
-  return { values: restored, unlocked: restored };
-}

@@ -6,7 +6,7 @@ import { DEFAULT_RUNTIME } from '../src/ambient/scripts/libs/settings-meta.js';
 
 const defaults = defaultValues(SettingsConfig);
 const build = (values = {}, opts = {}) =>
-  buildAmbientSections(SettingsConfig, { ...defaults, ...values }, { deepDarkOn: false, runtime: DEFAULT_RUNTIME, ...opts });
+  buildAmbientSections(SettingsConfig, { ...defaults, ...values }, { runtime: DEFAULT_RUNTIME, ...opts });
 const names = (sections) => sections.flatMap((s) => s.settings.map((e) => e.setting.name));
 
 test('sections follow settings-config order', () => {
@@ -24,15 +24,6 @@ test('advanced settings only show when Advanced is on', () => {
   assert.ok(!build({ advancedSettings: false }).some((s) => s.label === 'Stats'));
   const on = names(build({ advancedSettings: true }));
   assert.ok(on.includes('showFPS'));
-});
-
-test('Deep Dark hides theme and page greyness', () => {
-  const on = names(build({ advancedSettings: true }, { deepDarkOn: true }));
-  assert.ok(!on.includes('theme'));
-  assert.ok(!on.includes('pageBackgroundGreyness'));
-  const off = names(build({ advancedSettings: true }, { deepDarkOn: false }));
-  assert.ok(off.includes('theme'));
-  assert.ok(off.includes('pageBackgroundGreyness'));
 });
 
 test('WebGL-only settings are disabled without WebGL', () => {
@@ -108,4 +99,10 @@ test('import of an empty or invalid file throws', () => {
   assert.throws(() => parseImport('', SettingsConfig));
   assert.throws(() => parseImport('{}', SettingsConfig));
   assert.throws(() => parseImport('not json', SettingsConfig));
+});
+
+test('theme and page greyness are ordinary settings again', () => {
+  const shown = names(build({ advancedSettings: true }));
+  assert.ok(shown.includes('theme'));
+  assert.ok(shown.includes('pageBackgroundGreyness'));
 });

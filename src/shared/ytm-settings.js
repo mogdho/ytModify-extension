@@ -9,8 +9,6 @@ export const YTM_DEFAULTS = Object.freeze({
   'ytm-pip-key': 'P',
   'ytm-look-player-size': 'big',
   'ytm-look-player-scale': 15,
-  'ytm-look-deep-dark': true,
-  'ytm-look-accent': '#ff0033',
   'ytm-look-font': true,
   'ytm-look-logo': true,
   'ytm-quality-enabled': true,
@@ -34,7 +32,6 @@ const VALIDATORS = {
     typeof v === 'number' && Number.isFinite(v)
       ? Math.min(PLAYER_SCALE_MAX, Math.max(PLAYER_SCALE_MIN, Math.round(v)))
       : undefined,
-  'ytm-look-accent': (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined),
   'ytm-pip-key': (v) => (typeof v === 'string' && /^[A-Z0-9]?$/.test(v) ? v : undefined),
   'ytm-popup-tab': oneOf('pip', 'look', 'quality', 'ambient'),
   'ytm-quality-normal': oneOf(...QUALITY_VALUES),
