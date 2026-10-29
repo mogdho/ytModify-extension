@@ -15,6 +15,10 @@ test('defaults match the spec', () => {
     'ytm-look-accent': '#ff0033',
     'ytm-look-font': true,
     'ytm-look-logo': true,
+    'ytm-quality-enabled': true,
+    'ytm-quality-normal': 'hd720',
+    'ytm-quality-fullscreen': 'hd1080',
+    'ytm-quality-mini': 'medium',
     'ytm-popup-tab': 'pip',
   });
 });
@@ -94,4 +98,13 @@ test('isExtensionAlive follows chrome.runtime.id', () => {
   } finally {
     delete globalThis.chrome;
   }
+});
+
+test('quality defaults and validation', () => {
+  assert.equal(YTM_DEFAULTS['ytm-quality-enabled'], true);
+  assert.equal(YTM_DEFAULTS['ytm-quality-normal'], 'hd720');
+  assert.equal(YTM_DEFAULTS['ytm-quality-fullscreen'], 'hd1080');
+  assert.equal(YTM_DEFAULTS['ytm-quality-mini'], 'medium');
+  assert.equal(getYtmSettings({ 'ytm-quality-normal': 'bogus' })['ytm-quality-normal'], 'hd720');
+  assert.equal(getYtmSettings({ 'ytm-quality-mini': 'auto' })['ytm-quality-mini'], 'auto');
 });

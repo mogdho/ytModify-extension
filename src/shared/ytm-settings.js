@@ -13,8 +13,14 @@ export const YTM_DEFAULTS = Object.freeze({
   'ytm-look-accent': '#ff0033',
   'ytm-look-font': true,
   'ytm-look-logo': true,
+  'ytm-quality-enabled': true,
+  'ytm-quality-normal': 'hd720',
+  'ytm-quality-fullscreen': 'hd1080',
+  'ytm-quality-mini': 'medium',
   'ytm-popup-tab': 'pip',
 });
+
+const QUALITY_VALUES = ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160'];
 
 export const PLAYER_SCALE_MIN = 0;
 export const PLAYER_SCALE_MAX = 30;
@@ -30,6 +36,9 @@ const VALIDATORS = {
       : undefined,
   'ytm-look-accent': (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined),
   'ytm-popup-tab': oneOf('pip', 'look', 'ambient'),
+  'ytm-quality-normal': oneOf(...QUALITY_VALUES),
+  'ytm-quality-fullscreen': oneOf(...QUALITY_VALUES),
+  'ytm-quality-mini': oneOf(...QUALITY_VALUES),
 };
 
 const validate = (key, value) => {
