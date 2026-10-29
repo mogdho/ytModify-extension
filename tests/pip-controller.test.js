@@ -167,3 +167,60 @@ test('prepare ignores videos that are not the player', () => {
   c.prepare(main);
   assert.equal(main.autoPictureInPicture, true);
 });
+
+import { isPipKey } from '../src/pip/pip-controller.js';
+
+const key = (k, extra = {}) => ({ key: k, ctrlKey: false, altKey: false, metaKey: false, shiftKey: false, target: { tagName: 'DIV', isContentEditable: false }, ...extra });
+
+test('the pop-out key matches only a plain press outside text fields', () => {
+  assert.equal(isPipKey(key('p'), 'P'), true);
+  assert.equal(isPipKey(key('P'), 'P'), true);
+  assert.equal(isPipKey(key('p', { shiftKey: true }), 'P'), false); // Shift+P is YouTube's "previous video"
+  assert.equal(isPipKey(key('p', { ctrlKey: true }), 'P'), false);
+  assert.equal(isPipKey(key('p', { altKey: true }), 'P'), false);
+  assert.equal(isPipKey(key('p', { target: { tagName: 'INPUT' } }), 'P'), false);
+  assert.equal(isPipKey(key('p', { target: { tagName: 'TEXTAREA' } }), 'P'), false);
+  assert.equal(isPipKey(key('p', { target: { tagName: 'DIV', isContentEditable: true } }), 'P'), false);
+  assert.equal(isPipKey(key('o'), 'P'), false);
+  assert.equal(isPipKey(key('p'), ''), false); // key turned off
+});
+
+test('the pop-out key toggles: out, then back in', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  c.toggle();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main']);
+  c.toggle();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
+});
+
+test('the pop-out key works even with auto pop-out off', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page, { ...YTM_DEFAULTS, 'ytm-pip-enabled': false });
+  c.toggle();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main']);
+});
+
+test('focus signals that contradict the page focus are ignored (alt-tab flicker)', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.pictureInPictureElement = v;
+  page.document.focused = false;
+  c.handle('app-focus'); // arrives during alt-tab while the page is not focused
+  await settle();
+  assert.deepEqual(page.calls, []);
+  page.document.pictureInPictureElement = null;
+  page.document.focused = true;
+  c.handle('app-blur'); // page is focused again: stale blur
+  await settle();
+  assert.deepEqual(page.calls, []);
+});

@@ -7,6 +7,7 @@ export const YTM_DEFAULTS = Object.freeze({
   'ytm-pip-app-switch': true,
   'ytm-pip-return': true,
   'ytm-pip-shorts': false,
+  'ytm-pip-key': 'P',
   'ytm-look-player-size': 'big',
   'ytm-look-player-scale': 15,
   'ytm-look-deep-dark': true,
@@ -35,6 +36,7 @@ const VALIDATORS = {
       ? Math.min(PLAYER_SCALE_MAX, Math.max(PLAYER_SCALE_MIN, Math.round(v)))
       : undefined,
   'ytm-look-accent': (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined),
+  'ytm-pip-key': (v) => (typeof v === 'string' && /^[A-Z0-9]?$/.test(v) ? v : undefined),
   'ytm-popup-tab': oneOf('pip', 'look', 'quality', 'ambient'),
   'ytm-quality-normal': oneOf(...QUALITY_VALUES),
   'ytm-quality-fullscreen': oneOf(...QUALITY_VALUES),
@@ -105,4 +107,4 @@ export const isExtensionAlive = alive;
 // turned off, an old script can't read storage any more; it must switch
 // pop-out off rather than fall back to the defaults.
 export const pipSettingsForPage = (extensionAlive, settings) =>
-  extensionAlive ? settings : { ...settings, 'ytm-pip-enabled': false, 'ytm-quality-enabled': false };
+  extensionAlive ? settings : { ...settings, 'ytm-pip-enabled': false, 'ytm-pip-key': '', 'ytm-quality-enabled': false };

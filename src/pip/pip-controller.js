@@ -10,6 +10,15 @@ export const RETRY_MS = 300;
 
 const TAB_CAUSES = new Set(['tab-hidden', 'media-session']);
 
+// The pop-out key: a plain press (no Ctrl/Alt/Shift/Meta; Shift+P is YouTube's
+// 'previous video') outside text fields. An empty key means off.
+export function isPipKey(event, key) {
+  if (!key || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return false;
+  const t = event.target;
+  if (t && (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName))) return false;
+  return typeof event.key === 'string' && event.key.toUpperCase() === key;
+}
+
 export function createPipController({ document, location, delay = (fn, ms) => setTimeout(fn, ms) }) {
   let settings = null;
   let entering = false;
@@ -77,6 +86,10 @@ export function createPipController({ document, location, delay = (fn, ms) => se
   function handle(cause) {
     if (!settings) return;
     if (cause === 'tab-visible' || cause === 'app-focus') fallbackToken++;
+    // During alt-tab Chrome can report focus lost and gained in the same
+    // instant; trust the page's own focus state.
+    if (cause === 'app-focus' && !document.hasFocus()) return;
+    if (cause === 'app-blur' && document.hasFocus()) return;
     const video = getVideo();
     if (!video) return;
 
@@ -105,6 +118,16 @@ export function createPipController({ document, location, delay = (fn, ms) => se
       prepare();
     },
     handle,
+    // The pop-out key: a key press is the user gesture Chrome requires, so this
+    // works any time, independent of the auto pop-out switches.
+    toggle() {
+      const video = getVideo();
+      if (inPip()) {
+        document.exitPictureInPicture().catch(() => {});
+      } else if (video) {
+        enter(video, 'manual', { force: true });
+      }
+    },
     prepare,
     autoAllowed,
   };

@@ -9,6 +9,7 @@ test('defaults match the spec', () => {
     'ytm-pip-app-switch': true,
     'ytm-pip-return': true,
     'ytm-pip-shorts': false,
+    'ytm-pip-key': 'P',
     'ytm-look-player-size': 'big',
     'ytm-look-player-scale': 15,
     'ytm-look-deep-dark': true,
@@ -116,4 +117,15 @@ test('an orphaned page script also stops forcing quality', () => {
 
 test('popup can remember the Quality tab', () => {
   assert.equal(getYtmSettings({ 'ytm-popup-tab': 'quality' })['ytm-popup-tab'], 'quality');
+});
+
+test('pop-out key defaults to P; one letter/digit or empty (off)', () => {
+  assert.equal(YTM_DEFAULTS['ytm-pip-key'], 'P');
+  assert.equal(getYtmSettings({ 'ytm-pip-key': 'X' })['ytm-pip-key'], 'X');
+  assert.equal(getYtmSettings({ 'ytm-pip-key': '' })['ytm-pip-key'], '');
+  assert.equal(getYtmSettings({ 'ytm-pip-key': 'xy' })['ytm-pip-key'], 'P');
+});
+
+test('an orphaned page script also drops the pop-out key', () => {
+  assert.equal(pipSettingsForPage(false, YTM_DEFAULTS)['ytm-pip-key'], '');
 });

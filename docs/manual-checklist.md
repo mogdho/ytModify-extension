@@ -63,3 +63,10 @@ Check the quality with YouTube's gear menu, or right-click the video → "Stats 
 - [ ] A video without 1080p in fullscreen plays its highest quality below 1080p.
 - [ ] Pick 480p by hand in the gear menu: it stays until you change view or video.
 - [ ] Quality tab master switch off: YouTube picks quality again.
+
+## Pop-out key
+- [ ] Press `P` on a watch page: the video pops out. Press `P` again: it pops back in.
+- [ ] Press `P`, then alt-tab: the video stays popped out. Come back: it pops back in (if "Pop back in" is on).
+- [ ] Typing a `p` in the search box or a comment doesn't pop out.
+- [ ] `Shift+P` still goes to YouTube's previous video.
+- [ ] Change the key in the PiP tab (e.g. to `O`): the new key works without a refresh. Backspace in the key field turns the key off.

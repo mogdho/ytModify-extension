@@ -132,3 +132,34 @@ export function selectRow({ label, hint, options, value, onChange, sub = false }
     },
   };
 }
+
+// A one-key shortcut field: click it, press a key. Backspace/Delete turns it off.
+export function keyRow({ label, hint, value, onChange, sub = false }) {
+  const input = el('input', {
+    class: 'key',
+    value,
+    maxlength: 1,
+    placeholder: '–',
+    'aria-label': label,
+    title: 'Click, then press a letter or digit. Backspace turns it off.',
+    readOnly: true,
+    onkeydown: (e) => {
+      if (e.key === 'Tab') return;
+      e.preventDefault();
+      let key;
+      if (e.key === 'Backspace' || e.key === 'Delete') key = '';
+      else if (/^[a-z0-9]$/i.test(e.key)) key = e.key.toUpperCase();
+      else return;
+      input.value = key;
+      input.blur();
+      onChange(key);
+    },
+  });
+  const row = el('div', { class: `row${sub ? ' row--sub' : ''}` }, labelBlock(label, hint), input);
+  return {
+    row,
+    set: (v) => {
+      if (document.activeElement !== input) input.value = v;
+    },
+  };
+}

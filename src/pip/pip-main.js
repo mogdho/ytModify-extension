@@ -1,8 +1,9 @@
 // MAIN-world wiring for the auto pop-out: page events and Chrome's media
 // session go to the controller (pip-controller.js), which holds the rules.
-import { createPipController } from './pip-controller.js';
+import { createPipController, isPipKey } from './pip-controller.js';
 
 const controller = createPipController({ document, location });
+let pipKey = '';
 
 function registerMediaSession() {
   if (!('mediaSession' in navigator)) return;
@@ -20,6 +21,7 @@ window.addEventListener('message', (e) => {
   if (e.source !== window || e.data?.source !== 'ytm') return;
   if (e.data.type === 'pip-settings') {
     controller.setSettings(e.data.settings);
+    pipKey = e.data.settings['ytm-pip-key'] ?? '';
     registerMediaSession();
   } else if (e.data.type === 'pip-signal') {
     controller.handle(e.data.cause);
@@ -37,3 +39,15 @@ document.addEventListener('yt-navigate-finish', () => {
   controller.prepare();
   registerMediaSession();
 });
+
+// The pop-out key (default P). Capture phase, so it works wherever focus is on the page.
+document.addEventListener(
+  'keydown',
+  (e) => {
+    if (!isPipKey(e, pipKey)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    controller.toggle();
+  },
+  true
+);
