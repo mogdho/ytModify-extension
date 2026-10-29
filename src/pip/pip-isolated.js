@@ -14,7 +14,7 @@ sendSettings();
 document.addEventListener('yt-navigate-finish', sendSettings);
 
 safeStorage.onChanged((changes) => {
-  if (Object.keys(changes).some((k) => k.startsWith('ytm-pip-'))) sendSettings();
+  if (Object.keys(changes).some((k) => k.startsWith('ytm-pip-') || k.startsWith('ytm-quality-'))) sendSettings();
 });
 
 try {

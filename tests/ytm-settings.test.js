@@ -108,3 +108,8 @@ test('quality defaults and validation', () => {
   assert.equal(getYtmSettings({ 'ytm-quality-normal': 'bogus' })['ytm-quality-normal'], 'hd720');
   assert.equal(getYtmSettings({ 'ytm-quality-mini': 'auto' })['ytm-quality-mini'], 'auto');
 });
+
+test('an orphaned page script also stops forcing quality', () => {
+  assert.equal(pipSettingsForPage(false, YTM_DEFAULTS)['ytm-quality-enabled'], false);
+  assert.equal(pipSettingsForPage(true, YTM_DEFAULTS)['ytm-quality-enabled'], true);
+});

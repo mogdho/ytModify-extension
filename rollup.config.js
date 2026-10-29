@@ -39,6 +39,7 @@ export default [
   entry('src/look/look-content.js', 'dist/look/look-content.js'),
   entry('src/pip/pip-main.js', 'dist/pip/pip-main.js'),
   entry('src/pip/pip-isolated.js', 'dist/pip/pip-isolated.js'),
+  entry('src/quality/quality-main.js', 'dist/quality/quality-main.js'),
   ...['content', 'content-main', 'injected', 'live-chat'].map(ambient),
   entry('src/popup/popup.js', 'dist/popup/popup.js'),
 ];

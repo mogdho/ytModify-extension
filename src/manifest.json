@@ -68,6 +68,20 @@
       ],
       "run_at": "document_start",
       "js": [
+        "quality/quality-main.js"
+      ],
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "exclude_matches": [
+        "https://www.youtube.com/embed/*",
+        "https://www.youtube.com/live_chat*"
+      ],
+      "run_at": "document_start",
+      "js": [
         "pip/pip-isolated.js"
       ]
     },

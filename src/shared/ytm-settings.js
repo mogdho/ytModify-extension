@@ -105,4 +105,4 @@ export const isExtensionAlive = alive;
 // turned off, an old script can't read storage any more; it must switch
 // pop-out off rather than fall back to the defaults.
 export const pipSettingsForPage = (extensionAlive, settings) =>
-  extensionAlive ? settings : { ...settings, 'ytm-pip-enabled': false };
+  extensionAlive ? settings : { ...settings, 'ytm-pip-enabled': false, 'ytm-quality-enabled': false };
