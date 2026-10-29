@@ -39,3 +39,15 @@ If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds tha
 - [ ] Ambient: the key field next to "Ambient light" (G) can be changed, and the new key works on the page right away.
 - [ ] Ambient: Export, then Reset to defaults, then Import restores your values.
 - [ ] Ambient: with Deep Dark on, "Appearance (theme)" and "Background greyness" are hidden. Turn Deep Dark off and they appear (in General / Page content).
+
+## Edge cases
+- [ ] Watch → home → another video, without reloading: the look, ambient glow and pop-out all still work on the new video. *(Checked by Claude in a test browser: look and glow OK; pop-out needs your Chrome.)*
+- [ ] Three YouTube tabs open: a popup change updates all of them.
+- [ ] Reload ytModify at `chrome://extensions` while YouTube tabs stay open: the old tabs don't fill the console with red errors. Refreshing them brings everything back.
+- [ ] `/embed/` (a video embedded on another site), live chat, search and channel pages: nothing breaks.
+- [ ] `/premium` keeps YouTube's normal look. *(Checked by Claude.)*
+- [ ] Switching tabs during an ad, or with a paused or ended video: no pop-out, no errors.
+- [ ] Theater mode and fullscreen with Big player plus Ambient light look right.
+
+## Known
+- Deep Dark makes the text on the "Accept all / Reject all" buttons of YouTube's cookie-consent dialog hard to see. This comes from the original Deep Dark style.

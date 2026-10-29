@@ -645,7 +645,6 @@ Video ready state: ${readyStateToString(videoElem?.readyState)}`);
 
         this.handleVideoErrorTimeout = setTimeout(this.handleVideoError, 1000);
       },
-      click: this.settings.onCloseMenu,
       enterpictureinpicture: async () => {
         this.videoIsPictureInPicture = true;
         await this.optionalFrame();

@@ -29,3 +29,23 @@ for (const dir of ['src/ambient', 'dist']) {
     }
   });
 }
+
+test('code outside settings.js only uses Settings members that still exist', () => {
+  const libs = join(root, 'src/ambient/scripts');
+  const settingsSrc = readFileSync(join(libs, 'libs/settings.js'), 'utf8');
+  const configSrc = readFileSync(join(libs, 'libs/settings-config.js'), 'utf8');
+  const defined = new Set([
+    ...[...settingsSrc.matchAll(/^  (?:async |static )?([A-Za-z_]\w*)\s*(?:=|\()/gm)].map((m) => m[1]),
+    ...[...settingsSrc.matchAll(/this\.([A-Za-z_]\w*)\s*(?:\?\?)?=/g)].map((m) => m[1]),
+    ...[...configSrc.matchAll(/name: '([^'.]+)/g)].map((m) => m[1]),
+  ]);
+  const missing = [];
+  for (const file of walk(libs)) {
+    if (file.endsWith('settings.js') || !file.endsWith('.js')) continue;
+    for (const m of readFileSync(file, 'utf8').matchAll(/\bsettings\.([A-Za-z_]\w*)/g)) {
+      if (m[1] === 'js') continue; // "settings.js" in comments
+      if (!defined.has(m[1])) missing.push(`${m[1]} in ${file}`);
+    }
+  }
+  assert.deepEqual(missing, []);
+});
