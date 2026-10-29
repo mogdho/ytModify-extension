@@ -34,7 +34,7 @@ export function pickQuality(wanted, available) {
 
 /**
  * @param {{settings, view, available: string[], forcedBefore: boolean}} input
- * @returns {{action: 'set', quality: string} | {action: 'auto'} | {action: 'none'}}
+ * @returns {{action: 'set', quality: string} | {action: 'auto'} | {action: 'none'} | {action: 'wait'}}
  */
 export function qualityRequest({ settings, view, available, forcedBefore }) {
   const release = forcedBefore ? { action: 'auto' } : { action: 'none' };
@@ -42,5 +42,14 @@ export function qualityRequest({ settings, view, available, forcedBefore }) {
   const wanted = wantedQuality(settings, view);
   if (wanted === 'auto') return release;
   const quality = pickQuality(wanted, available);
-  return quality ? { action: 'set', quality } : { action: 'none' };
+  // No usable levels yet (empty, or only 'auto'): try again shortly.
+  return quality ? { action: 'set', quality } : { action: 'wait' };
 }
+
+// Changes to anything else (e.g. PiP settings) must not re-apply the quality,
+// or a quality picked by hand in YouTube's menu would be undone.
+export const qualitySettingsKey = (settings) =>
+  JSON.stringify(['enabled', 'normal', 'fullscreen', 'mini'].map((k) => settings['ytm-quality-' + k]));
+
+// Shorts have their own player element.
+export const playerSelector = (pathname) => (pathname.startsWith('/shorts') ? '#shorts-player' : '#movie_player');

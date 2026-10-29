@@ -42,5 +42,26 @@ test('quality request', () => {
   assert.deepEqual(qualityRequest({ settings: { ...S, 'ytm-quality-enabled': false }, view: 'mini', available: av, forcedBefore: false }), { action: 'none' });
   assert.deepEqual(qualityRequest({ settings: { ...S, 'ytm-quality-normal': 'auto' }, view: 'normal', available: av, forcedBefore: true }), { action: 'auto' });
   assert.deepEqual(qualityRequest({ settings: { ...S, 'ytm-quality-normal': 'auto' }, view: 'normal', available: av, forcedBefore: false }), { action: 'none' });
-  assert.deepEqual(qualityRequest({ settings: S, view: 'normal', available: [], forcedBefore: false }), { action: 'none' });
+  assert.deepEqual(qualityRequest({ settings: S, view: 'normal', available: [], forcedBefore: false }), { action: 'wait' });
+});
+
+import { qualitySettingsKey, playerSelector } from '../src/quality/quality-core.js';
+
+test('levels not ready yet (only "auto" listed) means wait, not done', () => {
+  assert.deepEqual(qualityRequest({ settings: S, view: 'normal', available: ['auto'], forcedBefore: false }), { action: 'wait' });
+  // An Auto view never waits.
+  assert.deepEqual(qualityRequest({ settings: { ...S, 'ytm-quality-normal': 'auto' }, view: 'normal', available: [], forcedBefore: false }), { action: 'none' });
+});
+
+test('only quality settings count as a quality settings change', () => {
+  const k = qualitySettingsKey(S);
+  assert.equal(qualitySettingsKey({ ...S, 'ytm-pip-shorts': true }), k);
+  assert.notEqual(qualitySettingsKey({ ...S, 'ytm-quality-mini': 'small' }), k);
+  assert.notEqual(qualitySettingsKey({ ...S, 'ytm-quality-enabled': false }), k);
+});
+
+test('Shorts use the Shorts player', () => {
+  assert.equal(playerSelector('/shorts/abc'), '#shorts-player');
+  assert.equal(playerSelector('/watch'), '#movie_player');
+  assert.equal(playerSelector('/'), '#movie_player');
 });
