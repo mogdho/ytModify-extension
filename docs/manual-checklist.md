@@ -29,3 +29,13 @@ If (a) or (b) fails but worked with yt-mini-PIP, note which, and Claude adds tha
 - [ ] No Ambient gear button appears in the player controls.
 - [ ] Pressing `G` toggles the glow and shows a small "G" bezel.
 - [ ] Two watch tabs open: a video with black bars in tab A doesn't change the bar clipping in tab B.
+
+## Popup
+- [ ] The toolbar icon opens the popup with PiP · Look · Ambient tabs; it reopens on the last tab used.
+- [ ] Look: every control changes an open watch tab live (Normal/Big, size slider, Deep Dark, accent colour, font, logo).
+- [ ] Ambient: changing a setting in each section changes the glow live. Double-clicking a control resets it.
+- [ ] Ambient: searching "bar" finds the black-bar settings.
+- [ ] Ambient: Settings → Advanced shows and hides the advanced settings.
+- [ ] Ambient: the key field next to "Ambient light" (G) can be changed, and the new key works on the page right away.
+- [ ] Ambient: Export, then Reset to defaults, then Import restores your values.
+- [ ] Ambient: with Deep Dark on, "Appearance (theme)" and "Background greyness" are hidden. Turn Deep Dark off and they appear (in General / Page content).
