@@ -11,6 +11,8 @@ export const YTM_DEFAULTS = Object.freeze({
   'ytm-look-player-scale': 15,
   'ytm-look-font': true,
   'ytm-look-logo': true,
+  'ytm-look-accents': true,
+  'ytm-look-accent-color': '#ff0033',
   'ytm-quality-enabled': true,
   'ytm-quality-normal': 'hd720',
   'ytm-quality-fullscreen': 'hd1080',
@@ -28,6 +30,7 @@ const oneOf = (...allowed) => (v) => (allowed.includes(v) ? v : undefined);
 // Each returns the cleaned value, or undefined to use the default.
 const VALIDATORS = {
   'ytm-look-player-size': oneOf('big', 'normal'),
+  'ytm-look-accent-color': (v) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : undefined),
   'ytm-look-player-scale': (v) =>
     typeof v === 'number' && Number.isFinite(v)
       ? Math.min(PLAYER_SCALE_MAX, Math.max(PLAYER_SCALE_MIN, Math.round(v)))

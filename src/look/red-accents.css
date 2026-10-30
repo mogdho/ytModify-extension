@@ -1,0 +1,129 @@
+/* Red accents, taken from Deep Dark theme by RaitaroH - https://github.com/RaitaroH/YouTube-DeepDark
+ * License: GNU General Public License v3.0. Stylus wrapper removed. --main-color is set by ytModify. */
+:root
+	{
+		--main-color: #ff0033;
+		--main-text: #eff0f1;
+	}
+
+	/* ========== Text selection ========== */
+	::selection
+	{
+		background: var(--main-color) !important;
+		color: var(--main-text) !important;
+	}
+	::-moz-selection
+	{
+		background: var(--main-color) !important;
+		color: var(--main-text) !important;
+	}
+
+	/* ========== Link focus outlines ========== */
+	a
+	{
+		outline-color: var(--main-color) !important;
+	}
+
+	/* ========== Links ========== */
+	a:hover
+	{
+		color: var(--main-color) !important;
+		fill: var(--main-color) !important;
+	}
+
+	/* ========== Icons ========== */
+	yt-icon-button:hover svg,
+	iron-icon:hover
+	{
+		fill: var(--main-color) !important;
+	}
+	/*3 dot menu*/
+	ytd-menu-renderer .ytd-menu-renderer[style-target="button"] yt-icon:hover
+	{
+		color: var(--main-color) !important;
+	}
+	/*search icon*/
+	#search-icon-legacy.ytd-searchbox:hover yt-icon.ytd-searchbox,
+	.YtSearchboxComponentSearchButton:hover .yt-spec-icon-shape,
+	.ytSearchboxComponentSearchButton:hover .yt-spec-icon-shape,
+	#search-icon.ytd-searchbox:hover
+	{
+		color: var(--main-color) !important;
+	}
+	/*notification bell*/
+	button.yt-icon-button:hover div.yt-spec-icon-badge-shape.yt-spec-icon-badge-shape--type-notification div.yt-spec-icon-badge-shape__icon yt-icon yt-icon-shape.style-scope.yt-icon icon-shape.yt-spec-icon-shape div
+	{
+		color: var(--main-color) !important;
+	}
+	/*watch later on thumbnails*/
+	.style-scope.ytd-thumbnail-overlay-toggle-button-renderer:hover
+	{
+		fill: var(--main-color) !important;
+	}
+	/*player buttons*/
+	.ytd-miniplayer .ytp-button:not([aria-disabled="true"]):not([disabled]):not([aria-hidden="true"]):hover svg path
+	{
+		fill: var(--main-color) !important;
+	}
+
+	/* ========== Titles ========== */
+	.title:hover,
+	#video-title:hover,
+	ytd-compact-video-renderer:hover #video-title.ytd-compact-video-renderer,
+	ytd-video-renderer:hover #video-title.ytd-video-renderer,
+	ytd-playlist-renderer:hover h3.ytd-playlist-renderer,
+	ytd-grid-video-renderer:hover #video-title.yt-simple-endpoint.ytd-grid-video-renderer,
+	#content.ytd-playlist-video-renderer:hover #video-title,
+	a.yt-simple-endpoint.ytd-playlist-panel-video-renderer:hover #video-title,
+	.yt-lockup-metadata-view-model-wiz__title:hover,
+	.yt-lockup-metadata-view-model__title:hover,
+	ytd-macro-markers-list-item-renderer:hover h4.ytd-macro-markers-list-item-renderer,
+	#author-text.yt-simple-endpoint.ytd-comment-renderer:hover,
+	#name:hover
+	{
+		color: var(--main-color) !important;
+	}
+
+	/* ========== Menu items ========== */
+	/*sidebar*/
+	ytd-guide-entry-renderer:hover #endpoint.yt-simple-endpoint.ytd-guide-entry-renderer,
+	ytd-guide-entry-renderer:hover svg
+	{
+		color: var(--main-color) !important;
+		fill: var(--main-color) !important;
+	}
+	a.ytd-mini-guide-entry-renderer:hover .guide-icon,
+	a.ytd-mini-guide-entry-renderer:hover .title.ytd-mini-guide-entry-renderer,
+	#guide-links-primary.ytd-guide-renderer > a:hover,
+	#guide-links-secondary.ytd-guide-renderer > a:hover
+	{
+		color: var(--main-color) !important;
+	}
+	/*dropdown / popup menus*/
+	ytd-menu-service-item-renderer:hover yt-formatted-string.ytd-menu-service-item-renderer,
+	a.ytd-menu-navigation-item-renderer:hover yt-formatted-string.ytd-menu-navigation-item-renderer,
+	tp-yt-paper-listbox a.yt-simple-endpoint.yt-dropdown-menu:hover .item.yt-dropdown-menu,
+	tp-yt-paper-item.ytd-menu-service-item-download-renderer:hover yt-formatted-string.ytd-menu-service-item-download-renderer,
+	ytd-toggle-menu-service-item-renderer:hover .style-scope.ytd-toggle-menu-service-item-renderer
+	{
+		color: var(--main-color) !important;
+	}
+	/*account menu*/
+	tp-yt-paper-item.ytd-compact-link-renderer:hover *,
+	ytd-toggle-theme-compact-link-renderer:hover #label.ytd-toggle-theme-compact-link-renderer,
+	ytd-toggle-theme-compact-link-renderer:hover yt-icon
+	{
+		color: var(--main-color) !important;
+	}
+	/*comment sort menu*/
+	yt-sort-filter-sub-menu-renderer.ytd-comments-header-renderer:hover #icon-label.yt-dropdown-menu,
+	yt-sort-filter-sub-menu-renderer.ytd-comments-header-renderer:hover #label-icon.yt-dropdown-menu
+	{
+		color: var(--main-color) !important;
+		fill: var(--main-color) !important;
+	}
+	/*channel tabs*/
+	tp-yt-paper-tab:hover > .tab-content.tp-yt-paper-tab
+	{
+		color: var(--main-color) !important;
+	}

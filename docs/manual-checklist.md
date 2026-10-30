@@ -9,6 +9,7 @@ Disable yt-mini-PIP, Ambient light and the Stylus styles first, so they don't mi
 - [ ] The top-left logo is the Premium logo.
 - [ ] The player is bigger than with ytModify off.
 - [ ] `/premium` keeps YouTube's normal look.
+- [ ] Red accents: hovering links, video titles, sidebar items and menu items turns them red; selected text is red. A new accent colour applies live; switching Red accents off removes it.
 
 ## PiP findings
 Play a watch video with sound, then:

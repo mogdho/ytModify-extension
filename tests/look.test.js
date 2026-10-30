@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { buildLookStyles, isLookExcludedPath } from '../src/look/look.js';
 import { YTM_DEFAULTS } from '../src/shared/ytm-settings.js';
 
-const css = { sans: 'SANS', logo: 'a{x:light} html[dark] a{x:dark}', bigger: 'BIG' };
+const css = { sans: 'SANS', logo: 'a{x:light} html[dark] a{x:dark}', bigger: 'BIG', accents: 'ACC' };
 const ids = (styles) => styles.map((s) => s.id);
 const byId = (styles, id) => styles.find((s) => s.id === id);
 
 test('defaults enable every style in order', () => {
-  assert.deepEqual(ids(buildLookStyles(YTM_DEFAULTS, css)), ['ytm-sans', 'ytm-logo', 'ytm-bigger']);
+  assert.deepEqual(ids(buildLookStyles(YTM_DEFAULTS, css)), ['ytm-sans', 'ytm-logo', 'ytm-accents', 'ytm-bigger']);
 });
 
 test('there is no Deep Dark theme any more', () => {
@@ -28,7 +28,7 @@ test('normal player size removes the bigger player', () => {
 
 test('font and logo switches remove their styles', () => {
   const out = ids(buildLookStyles({ ...YTM_DEFAULTS, 'ytm-look-font': false, 'ytm-look-logo': false }, css));
-  assert.deepEqual(out, ['ytm-bigger']);
+  assert.deepEqual(out, ['ytm-accents', 'ytm-bigger']);
 });
 
 test('player scale becomes a CSS multiplier', () => {
@@ -45,4 +45,20 @@ test('premium and howyoutubeworks pages are excluded', () => {
   assert.equal(isLookExcludedPath('/howyoutubeworks/'), true);
   assert.equal(isLookExcludedPath('/watch'), false);
   assert.equal(isLookExcludedPath('/'), false);
+});
+
+const css2 = { ...css, accents: 'a:hover{color:var(--main-color)!important}' };
+
+test('red accents are on by default and use the chosen colour', () => {
+  const styles = buildLookStyles(YTM_DEFAULTS, css2);
+  const accents = byId(styles, 'ytm-accents');
+  assert.ok(accents);
+  assert.ok(accents.text.startsWith(':root{--main-color:#ff0033 !important}'));
+  assert.ok(accents.text.endsWith(css2.accents));
+  const blue = byId(buildLookStyles({ ...YTM_DEFAULTS, 'ytm-look-accent-color': '#3ea6ff' }, css2), 'ytm-accents');
+  assert.ok(blue.text.startsWith(':root{--main-color:#3ea6ff !important}'));
+});
+
+test('red accents switch off', () => {
+  assert.ok(!ids(buildLookStyles({ ...YTM_DEFAULTS, 'ytm-look-accents': false }, css2)).includes('ytm-accents'));
 });

@@ -13,6 +13,8 @@ test('defaults match the spec', () => {
     'ytm-look-player-scale': 15,
     'ytm-look-font': true,
     'ytm-look-logo': true,
+    'ytm-look-accents': true,
+    'ytm-look-accent-color': '#ff0033',
     'ytm-quality-enabled': true,
     'ytm-quality-normal': 'hd720',
     'ytm-quality-fullscreen': 'hd1080',
@@ -129,4 +131,9 @@ test('an orphaned page script also drops the pop-out key', () => {
 test('Deep Dark and accent settings are gone', () => {
   assert.equal('ytm-look-deep-dark' in YTM_DEFAULTS, false);
   assert.equal('ytm-look-accent' in YTM_DEFAULTS, false);
+});
+
+test('accent colour must be #rrggbb', () => {
+  assert.equal(getYtmSettings({ 'ytm-look-accent-color': 'red' })['ytm-look-accent-color'], '#ff0033');
+  assert.equal(getYtmSettings({ 'ytm-look-accent-color': '#12ab9f' })['ytm-look-accent-color'], '#12ab9f');
 });

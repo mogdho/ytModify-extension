@@ -3,11 +3,12 @@
 import sans from './youtube-sans.css';
 import logo from './premium-logo.css';
 import bigger from './bigger-player.css';
+import accents from './red-accents.css';
 import { buildLookStyles, isLookExcludedPath } from './look.js';
 import { getStoredYtmSettings, safeStorage } from '../shared/ytm-settings.js';
 
-const CSS = { sans, logo, bigger };
-const ALL_IDS = ['ytm-sans', 'ytm-logo', 'ytm-bigger'];
+const CSS = { sans, logo, bigger, accents };
+const ALL_IDS = ['ytm-sans', 'ytm-logo', 'ytm-accents', 'ytm-bigger'];
 
 let current = null;
 

@@ -17,7 +17,7 @@ Ambient glow · Auto pop-out · Fixed quality per view · Bigger player
 - 🌈 **Ambient light**: a soft glow around the video that follows its colours. It can also remove black bars.
 - 📺 **Auto pop-out**: the video pops into a small floating window when you switch tabs, and back when you return. Press **`P`** to pop out any time.
 - 🎯 **Fixed quality per view**: for example 1080p in fullscreen, 720p normally and 360p in the mini player.
-- 🔍 **Look**: a bigger player, the YouTube Sans font and the Premium logo.
+- 🔍 **Look**: a bigger player, the YouTube Sans font, the Premium logo and red hover accents (any colour you like).
 - 🔒 **Private**: no tracking, no analytics, nothing is sent anywhere.
 
 Everything is set from one popup, and changes apply instantly:
@@ -50,6 +50,7 @@ You can change any of these keys in the popup.
 ## Credits
 
 - [Ambient light for YouTube™](https://github.com/WesselKroos/youtube-ambilight) by Wessel Kroos (MIT). Its licence is in [`src/ambient/LICENSE-ambient-light.txt`](src/ambient/LICENSE-ambient-light.txt).
+- Red accents from [YouTube Deep Dark](https://github.com/RaitaroH/YouTube-DeepDark) by RaitaroH (GPL-3.0).
 - YouTube Premium svg logo by Phoenix~ (CC BY-NC 4.0).
 - Auto pop-out and bigger player by Mogdho Paul.
 - Demo video: *Big Buck Bunny* © Blender Foundation (CC BY 3.0).
