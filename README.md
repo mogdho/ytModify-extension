@@ -8,6 +8,8 @@
 
 Ambient glow · Auto pop-out · Fixed quality per view · Bigger player
 
+**⬇️ Download and setup guide: [mogdhopaul.com/ytmodify](https://mogdhopaul.com/ytmodify/)**
+
 <img src="docs/images/glow.gif" width="600" alt="Ambient light glowing around a playing video">
 
 </div>
