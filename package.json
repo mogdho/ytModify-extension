@@ -1,13 +1,14 @@
 {
   "name": "ytmodify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "description": "One extension for YouTube: auto pop-out, Deep Dark look, bigger player and ambient light.",
+  "description": "One extension for YouTube: ambient light, auto pop-out, fixed quality per view and a bigger player.",
   "license": "GPL-3.0-only",
   "author": "Mogdho Paul",
   "type": "module",
   "scripts": {
     "build": "rollup -c --silent && node scripts/build-static.js",
+    "zip": "npm run build && node scripts/zip.js",
     "test": "node --import ./tests/helpers/register.mjs --test \"tests/**/*.test.js\""
   },
   "devDependencies": {

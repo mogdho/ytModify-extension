@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createPipController, FALLBACK_MS, RETRY_MS } from '../src/pip/pip-controller.js';
+import { createPipController, FALLBACK_MS, RETRY_MS, CHROME_CLOSE_MS } from '../src/pip/pip-controller.js';
 import { YTM_DEFAULTS } from '../src/shared/ytm-settings.js';
 
 // A fake page: videos by selector, visibility, focus and PiP state.
@@ -222,4 +222,198 @@ test('focus signals that contradict the page focus are ignored (alt-tab flicker)
   c.handle('app-focus'); // arrives during alt-tab while the page is not focused
   await settle();
   assert.deepEqual(page.calls, []);
+});
+
+test('a window we did not open counts as Chrome\'s and gets the wait', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.pictureInPictureElement = v; // e.g. Chrome's own autoPictureInPicture
+  c.handle('tab-visible');
+  await settle();
+  assert.deepEqual(page.calls, []);
+  assert.equal(page.timers.at(-1).ms, CHROME_CLOSE_MS);
+});
+
+test('a late Chrome auto-PiP window also gets the wait', async () => {
+  const page = fakePage();
+  let finish;
+  const v = {
+    paused: false,
+    ended: false,
+    removeAttribute() {},
+    requestPictureInPicture() {
+      page.calls.push('enter:main');
+      return new Promise((resolve) => {
+        finish = () => {
+          page.document.pictureInPictureElement = v;
+          resolve();
+        };
+      });
+    },
+  };
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.hidden = true;
+  c.handle('media-session');
+  page.document.hidden = false;
+  finish();
+  await settle();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main'], 'no exit in the same instant');
+  assert.equal(page.timers.at(-1).ms, CHROME_CLOSE_MS);
+  page.runTimers();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
+});
+
+test('leaving again cancels a pending pop-back-in', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.hidden = true;
+  c.handle('media-session');
+  await settle();
+  page.document.hidden = false;
+  c.handle('tab-visible'); // first return: close scheduled
+  page.document.hidden = true;
+  c.handle('tab-hidden'); // leave again within the wait
+  page.document.hidden = false;
+  c.handle('tab-visible'); // second return: a new close scheduled
+  const closes = page.timers.filter((t) => t.ms === CHROME_CLOSE_MS);
+  assert.equal(closes.length, 2);
+  closes[0].fn(); // the stale one from the first return
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main'], 'stale close does nothing');
+  closes[1].fn();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
+});
+
+test('once the window closes, the next one is no longer treated as ours', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  c.toggle(); // ours
+  await settle();
+  page.document.pictureInPictureElement = null;
+  c.left(); // the window closed
+  page.document.pictureInPictureElement = v; // a new window we did not open
+  page.calls.length = 0;
+  c.handle('tab-visible');
+  await settle();
+  assert.deepEqual(page.calls, [], 'waits for Chrome instead of closing at once');
+});
+
+test('a pop-out that finishes after coming back is closed at once', async () => {
+  const page = fakePage();
+  let finish;
+  const v = {
+    paused: false,
+    ended: false,
+    removeAttribute() {},
+    requestPictureInPicture() {
+      page.calls.push('enter:main');
+      return new Promise((resolve) => {
+        finish = () => {
+          page.document.pictureInPictureElement = v;
+          resolve();
+        };
+      });
+    },
+  };
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  // Like Chrome: exiting with no PiP window yet is refused.
+  page.document.exitPictureInPicture = async () => {
+    if (!page.document.pictureInPictureElement) throw new Error('InvalidStateError');
+    page.calls.push('exit');
+    page.document.pictureInPictureElement = null;
+  };
+  const c = controllerFor(page);
+  page.document.hidden = true;
+  c.handle('tab-hidden');
+  page.runTimers(); // fallback fires; the request is still pending
+  await settle();
+  page.document.hidden = false;
+  c.handle('tab-visible'); // not in PiP yet, so nothing to close
+  await settle();
+  finish(); // Chrome opens the window while the tab is in front
+  await settle();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
+  assert.equal(page.document.pictureInPictureElement, null);
+});
+
+test('a failed pop-back is retried once while the tab is in front', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  c.toggle(); // our own window, so it is closed without waiting for Chrome
+  await settle();
+  page.calls.length = 0;
+  let fails = 1;
+  page.document.exitPictureInPicture = async () => {
+    page.calls.push('exit');
+    if (fails-- > 0) throw new Error('InvalidStateError');
+    page.document.pictureInPictureElement = null;
+  };
+  c.handle('tab-visible');
+  await settle();
+  assert.equal(page.timers[0].ms, RETRY_MS);
+  page.runTimers();
+  await settle();
+  assert.deepEqual(page.calls, ['exit', 'exit']);
+  assert.equal(page.document.pictureInPictureElement, null);
+});
+
+test('a Chrome auto-PiP window gets time to close itself before we step in', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.hidden = true;
+  c.handle('media-session'); // Chrome's auto-PiP opens the window
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main']);
+  page.document.hidden = false;
+  c.handle('tab-visible');
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main'], 'no exit in the same instant as Chrome closing it');
+  assert.equal(page.timers.at(-1).ms, CHROME_CLOSE_MS);
+  page.document.pictureInPictureElement = null; // Chrome closed it itself
+  page.runTimers();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main'], 'nothing left to close');
+});
+
+test('a Chrome auto-PiP window that Chrome leaves open is closed after the wait', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  page.document.hidden = true;
+  c.handle('media-session');
+  await settle();
+  page.document.hidden = false;
+  c.handle('tab-visible');
+  page.runTimers();
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
+});
+
+test('a window we opened ourselves is still closed at once', async () => {
+  const page = fakePage();
+  const v = fakeVideo(page, 'main');
+  page.document.querySelector = (sel) => (sel === '#movie_player video.html5-main-video' ? v : null);
+  const c = controllerFor(page);
+  c.toggle(); // the P key
+  await settle();
+  page.document.hidden = false;
+  c.handle('tab-visible');
+  await settle();
+  assert.deepEqual(page.calls, ['enter:main', 'exit']);
 });

@@ -7,6 +7,10 @@ import { decidePip } from './pip-decide.js';
 // trying a plain request.
 export const FALLBACK_MS = 500;
 export const RETRY_MS = 300;
+// Chrome closes its own auto-PiP window when the tab comes back. Calling
+// exitPictureInPicture in that same moment makes Chrome hang with the window
+// hidden but never closed, so give Chrome this long to do it first.
+export const CHROME_CLOSE_MS = 1000;
 
 const TAB_CAUSES = new Set(['tab-hidden', 'media-session']);
 
@@ -23,6 +27,11 @@ export function createPipController({ document, location, delay = (fn, ms) => se
   let settings = null;
   let entering = false;
   let fallbackToken = 0;
+  let closeToken = 0;
+  // Who opened the current window: 'chrome' (auto-PiP via the media session),
+  // 'us', or null when unknown (Chrome's own autoPictureInPicture, YouTube's
+  // button). Unknown is handled like 'chrome': the safe, waiting path.
+  let openedBy = null;
 
   const isShorts = () => location.pathname.startsWith('/shorts');
 
@@ -50,22 +59,55 @@ export function createPipController({ document, location, delay = (fn, ms) => se
     }
   }
 
+  // Pop back in. Chrome can refuse while the window is still opening or
+  // closing, so try once more after a moment if the tab is still in front.
+  function exit() {
+    document.exitPictureInPicture().catch(() => {
+      delay(() => {
+        if (inPip() && !document.hidden) document.exitPictureInPicture().catch(() => {});
+      }, RETRY_MS);
+    });
+  }
+
+  // Pop back in when the user returns. A window Chrome opened is closed by
+  // Chrome itself; closing it in that same moment hangs Chrome with the window
+  // hidden. So only our own windows close at once; others get CHROME_CLOSE_MS
+  // first. Leaving or returning again cancels a pending close.
+  function popBackIn() {
+    const token = ++closeToken;
+    if (openedBy === 'us') {
+      exit();
+      return;
+    }
+    delay(() => {
+      if (token === closeToken && inPip() && !document.hidden) exit();
+    }, CHROME_CLOSE_MS);
+  }
+
   async function enter(video, cause, { force = false } = {}) {
     if (entering && !force) return;
     entering = true;
+    const opener = cause === 'media-session' ? 'chrome' : 'us';
     try {
       prepare(video);
       try {
         await video.requestPictureInPicture();
+        openedBy = opener;
       } catch {
         await new Promise((resolve) => delay(resolve, RETRY_MS));
         if (!inPip() && !video.paused && stillWanted(cause)) {
-          await video.requestPictureInPicture().catch(() => {});
+          await video.requestPictureInPicture().then(
+            () => (openedBy = opener),
+            () => {}
+          );
         }
       }
     } finally {
       entering = false;
     }
+    // The request can finish after the user is already back on the tab; then
+    // nothing else would ever close that window.
+    if (TAB_CAUSES.has(cause) && inPip() && !stillWanted(cause) && settings?.['ytm-pip-return']) popBackIn();
   }
 
   function decide(cause, video) {
@@ -86,6 +128,7 @@ export function createPipController({ document, location, delay = (fn, ms) => se
   function handle(cause) {
     if (!settings) return;
     if (cause === 'tab-visible' || cause === 'app-focus') fallbackToken++;
+    if (cause === 'tab-hidden' || cause === 'media-session') closeToken++;
     // During alt-tab Chrome can report focus lost and gained in the same
     // instant; trust the page's own focus state.
     if (cause === 'app-focus' && !document.hasFocus()) return;
@@ -94,7 +137,7 @@ export function createPipController({ document, location, delay = (fn, ms) => se
 
     const action = decide(cause, video);
     if (action === 'exit') {
-      document.exitPictureInPicture().catch(() => {});
+      popBackIn();
       return;
     }
     if (action !== 'enter') return;
@@ -129,5 +172,9 @@ export function createPipController({ document, location, delay = (fn, ms) => se
     },
     prepare,
     autoAllowed,
+    // The window closed (leavepictureinpicture): forget who opened it.
+    left() {
+      openedBy = null;
+    },
   };
 }

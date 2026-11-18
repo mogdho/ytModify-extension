@@ -14,6 +14,7 @@ Disable yt-mini-PIP, Ambient light and the Stylus styles first, so they don't mi
 ## PiP findings
 Play a watch video with sound, then:
 - [ ] (a) Switch to another tab: the video pops out. Come back: it pops back in.
+- [ ] (b) Switch away and back quickly, ten times in a row: it always pops back in. It never sticks on a black "Playing in picture-in-picture" player.
 - [ ] (c) Popup → PiP → "Pop back in when I return" off: does the window stay open when you return? (Chrome may close it itself.)
 - [ ] (d) "When switching tabs" off: tab switch no longer pops out.
 - [ ] (e) A paused video: nothing pops out.

@@ -13,7 +13,7 @@ test('dist manifest is valid', () => {
 
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.name, 'ytModify');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.0.1');
   assert.equal(manifest.action.default_popup, 'popup/popup.html');
   assert.deepEqual(manifest.permissions, ['storage', 'scripting', 'tabs']);
 

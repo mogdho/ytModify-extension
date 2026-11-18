@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ytModify",
   "version": "0.0.0",
-  "description": "Auto pop-out, Deep Dark look, bigger player and ambient light for YouTube, in one extension.",
+  "description": "Ambient light, auto pop-out, fixed quality per view and a bigger player for YouTube, in one extension.",
   "minimum_chrome_version": "121",
   "icons": {
     "16": "images/icon-16.png",

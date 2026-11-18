@@ -34,7 +34,14 @@ document.addEventListener('visibilitychange', () => {
 
 // Media events don't bubble, so listen in the capture phase.
 document.addEventListener('loadedmetadata', (e) => controller.prepare(e.target), true);
-document.addEventListener('leavepictureinpicture', (e) => setTimeout(() => controller.prepare(e.target), 100), true);
+document.addEventListener(
+  'leavepictureinpicture',
+  (e) => {
+    controller.left();
+    setTimeout(() => controller.prepare(e.target), 100);
+  },
+  true
+);
 document.addEventListener('yt-navigate-finish', () => {
   controller.prepare();
   registerMediaSession();
